@@ -188,7 +188,6 @@ void stream::_clean_tables(unsigned int instance_id) {
   _mysql.run_query(
            oss.str(),
            "SQL: could not clean hosts and services tables: ", false,
-           0, 0,
            instance_id % _mysql.connections_count());
 
   // Remove host group memberships.
@@ -202,7 +201,6 @@ void stream::_clean_tables(unsigned int instance_id) {
     _mysql.run_query(
              oss.str(),
              "SQL: could not clean host groups memberships table: ", false,
-             0, 0,
              instance_id % _mysql.connections_count());
   }
 
@@ -217,7 +215,6 @@ void stream::_clean_tables(unsigned int instance_id) {
     _mysql.run_query(
              oss.str(),
              "SQL: could not clean service groups memberships table: ", false,
-             0, 0,
              instance_id % _mysql.connections_count());
   }
 
@@ -244,7 +241,6 @@ void stream::_clean_tables(unsigned int instance_id) {
       << "        WHERE instance_id=" << instance_id << ")";
   _mysql.run_query(oss.str(),
       "SQL: could not clean host dependencies table: ", false,
-      0, 0,
       instance_id % _mysql.connections_count());
 
   // Remove host parents.
@@ -263,7 +259,6 @@ void stream::_clean_tables(unsigned int instance_id) {
   _mysql.run_query(
            oss.str(),
            "SQL: could not clean host parents table: ", false,
-           0, 0,
            instance_id % _mysql.connections_count());
 
   // Remove service dependencies.
@@ -291,7 +286,6 @@ void stream::_clean_tables(unsigned int instance_id) {
   _mysql.run_query(
            oss.str(),
            "SQL: could not clean service dependencies tables: ", false,
-           0, 0,
            instance_id % _mysql.connections_count());
 
   // Remove list of modules.
@@ -301,7 +295,6 @@ void stream::_clean_tables(unsigned int instance_id) {
   _mysql.run_query(
            oss.str(),
            "SQL: could not clean modules table: ", false,
-           0, 0,
            instance_id % _mysql.connections_count());
 
   oss.str("");
@@ -315,7 +308,6 @@ void stream::_clean_tables(unsigned int instance_id) {
   _mysql.run_query(
            oss.str(),
            "SQL: could not clean downtimes table: ", false,
-           0, 0,
            instance_id % _mysql.connections_count());
 
   // Remove comments.
@@ -331,7 +323,6 @@ void stream::_clean_tables(unsigned int instance_id) {
     _mysql.run_query(
              oss.str(),
              "SQL: could not clean comments table: ", false,
-             0, 0,
              instance_id % _mysql.connections_count());
   }
 
@@ -348,7 +339,6 @@ void stream::_clean_tables(unsigned int instance_id) {
   _mysql.run_query(
            oss.str(),
            "SQL: could not clean custom variables table: ", false,
-           0, 0,
            instance_id % _mysql.connections_count());
 }
 
@@ -465,7 +455,6 @@ void stream::_process_acknowledgement(
     _mysql.run_statement(
              _acknowledgement_insupdate,
              oss.str(), true,
-             0, 0,
              ack.poller_id % _mysql.connections_count());
   }
 }
@@ -508,7 +497,6 @@ void stream::_process_comment(misc::shared_ptr<io::data> const& e) {
   _mysql.run_statement(
            _comment_insupdate,
            oss.str(), true,
-           0, 0,
            cmmnt.poller_id % _mysql.connections_count());
 }
 
@@ -605,7 +593,6 @@ void stream::_process_custom_variable_status(
   int thread_id(_mysql.run_statement(
                          _custom_variable_status_update,
                          oss.str(), true,
-                         0, 0,
                          _cache_host_instance[cvs.host_id]
                               % _mysql.connections_count()));
   if (_mysql.get_affected_rows(thread_id, _custom_variable_status_update) != 1)
@@ -764,7 +751,6 @@ void stream::_process_event_handler(
   _mysql.run_statement(
            _event_handler_insupdate,
            oss.str(), true,
-           0, 0,
            _cache_host_instance[eh.host_id] % _mysql.connections_count());
 }
 
@@ -807,7 +793,6 @@ void stream::_process_flapping_status(
   _mysql.run_statement(
            _flapping_status_insupdate,
            oss.str(), true,
-           0, 0,
            _cache_host_instance[fs.host_id] % _mysql.connections_count());
 }
 
@@ -847,7 +832,6 @@ void stream::_process_host(
       _mysql.run_statement(
                _host_insupdate,
                oss.str(), true,
-               0, 0,
                h.poller_id % _mysql.connections_count());
 
       // Fill the cache...
@@ -898,7 +882,6 @@ void stream::_process_host_check(
     int thread_id(
           _cache_host_instance[hc.host_id] % _mysql.connections_count());
     _mysql.run_statement(_host_check_update, oss.str(), true,
-        0, 0,
         thread_id);
 
     if (_mysql.get_affected_rows(thread_id) != 1)
@@ -953,7 +936,6 @@ void stream::_process_host_dependency(
     _mysql.run_statement(
              _host_dependency_insupdate,
              oss.str(), true,
-             0, 0,
              _cache_host_instance[hd.host_id] % _mysql.connections_count());
   }
   // Delete.
@@ -1008,7 +990,6 @@ void stream::_process_host_group(
     _mysql.run_statement(
              _host_group_insupdate,
              oss.str(), true,
-             0, 0,
              hg.poller_id % _mysql.connections_count());
   }
   // Delete group.
@@ -1164,7 +1145,6 @@ void stream::_process_host_parent(
     _mysql.run_statement(
              _host_parent_insert,
              oss.str(), false,
-             0, 0,
              _cache_host_instance[hp.host_id] % _mysql.connections_count());
   }
   // Disable parenting.
@@ -1186,7 +1166,6 @@ void stream::_process_host_parent(
     _mysql.run_statement(
              _host_parent_delete,
              "SQL: ", false,
-             0, 0,
              _cache_host_instance[hp.host_id] % _mysql.connections_count());
   }
 }
@@ -1294,7 +1273,6 @@ void stream::_process_host_status(
     int thread_id(_mysql.run_statement(
                            _host_status_update,
                            oss.str(), true,
-                           0, 0,
                            _cache_host_instance[hs.host_id]
                                 % _mysql.connections_count()));
     // FIXME DBR: this call could be asynchronous if the only result
@@ -1354,7 +1332,6 @@ void stream::_process_instance(
     _mysql.run_statement(
              _instance_insupdate,
              oss.str(), true,
-             0, 0,
              i.poller_id % _mysql.connections_count());
   }
 }
@@ -1409,7 +1386,6 @@ void stream::_process_instance_status(
     _mysql.run_statement(
              _instance_status_update,
              oss.str(), true,
-             0, 0,
              is.poller_id % _mysql.connections_count());
 
     // FIXME DBR: The only action is to send a log error that could be sent
@@ -1678,7 +1654,6 @@ void stream::_process_module(
       _module_insert << m;
       _mysql.run_statement(_module_insert,
                oss.str(), true,
-               0, 0,
                m.poller_id % _mysql.connections_count());
     }
     else {
@@ -1794,7 +1769,6 @@ void stream::_process_service_check(
     int thread_id(_mysql.run_statement(
           _service_check_update,
           oss.str(), true,
-          0, 0,
           _cache_host_instance[sc.host_id] % _mysql.connections_count()));
 
     // FIXME DBR: always just an error log...
@@ -2154,7 +2128,6 @@ void stream::_process_service_status(
     int thread_id(_mysql.run_statement(
                            _service_status_update,
                            oss.str(), true,
-                           0, 0,
                            _cache_host_instance[ss.host_id]
                                 % _mysql.connections_count()));
 

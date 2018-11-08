@@ -62,7 +62,7 @@ using namespace com::centreon::broker::storage;
  *  @return NULL QVariant if f is a NaN, f casted as QVariant otherwise.
  */
 static inline QVariant check_double(double f) {
-  return (isnan(f) ? QVariant(QVariant::Double) : QVariant(f));
+  return (std::isnan(f) ? QVariant(QVariant::Double) : QVariant(f));
 }
 
 /**
@@ -74,9 +74,9 @@ static inline QVariant check_double(double f) {
  *  @return true if a and b are equal.
  */
 static inline bool double_equal(double a, double b) {
-  return ((isnan(a) && isnan(b))
-          || (isinf(a)
-              && isinf(b)
+  return ((std::isnan(a) && std::isnan(b))
+          || (std::isinf(a)
+              && std::isinf(b)
               && (std::signbit(a) == std::signbit(b)))
           || (std::isfinite(a)
               && std::isfinite(b)
@@ -855,9 +855,9 @@ void stream::_insert_perfdatas_new() {
             << "   , ctime, status, value)"
                "  VALUES (" << mv.metric_id << ", " << mv.c_time << ", '"
             << mv.status << "', ";
-      if (isinf(mv.value))
+      if (std::isinf(mv.value))
         query << ((mv.value < 0.0) ? -FLT_MAX : FLT_MAX);
-      else if (isnan(mv.value))
+      else if (std::isnan(mv.value))
         query << "NULL";
       else
         query << mv.value;
@@ -870,9 +870,9 @@ void stream::_insert_perfdatas_new() {
       metric_value& mv(_perfdata_queue.front());
       query << ", (" << mv.metric_id << ", " << mv.c_time << ", '"
             << mv.status << "', ";
-      if (isinf(mv.value))
+      if (std::isinf(mv.value))
         query << ((mv.value < 0.0) ? -FLT_MAX : FLT_MAX);
-      else if (isnan(mv.value))
+      else if (std::isnan(mv.value))
         query << "NULL";
       else
         query << mv.value;
@@ -911,9 +911,9 @@ void stream::_insert_perfdatas() {
             << "   , ctime, status, value)"
                "  VALUES (" << mv.metric_id << ", " << mv.c_time << ", '"
             << mv.status << "', ";
-      if (isinf(mv.value))
+      if (std::isinf(mv.value))
         query << ((mv.value < 0.0) ? -FLT_MAX : FLT_MAX);
-      else if (isnan(mv.value))
+      else if (std::isnan(mv.value))
         query << "NULL";
       else
         query << mv.value;
@@ -926,9 +926,9 @@ void stream::_insert_perfdatas() {
       metric_value& mv(_perfdata_queue.front());
       query << ", (" << mv.metric_id << ", " << mv.c_time << ", '"
             << mv.status << "', ";
-      if (isinf(mv.value))
+      if (std::isinf(mv.value))
         query << ((mv.value < 0.0) ? -FLT_MAX : FLT_MAX);
-      else if (isnan(mv.value))
+      else if (std::isnan(mv.value))
         query << "NULL";
       else
         query << mv.value;

@@ -1,5 +1,5 @@
 /*
-** Copyright 2011-2013 Merethis
+** Copyright 2011-2013,2017 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -20,8 +20,8 @@
 #ifndef CCE_CONFIGURATION_APPLIER_HOST_HH
 #  define CCE_CONFIGURATION_APPLIER_HOST_HH
 
+#  include "com/centreon/engine/host.hh"
 #  include "com/centreon/engine/namespace.hh"
-#  include "com/centreon/shared_ptr.hh"
 
 CCE_BEGIN()
 
@@ -38,16 +38,29 @@ namespace          configuration {
                    ~host() throw ();
       host&        operator=(host const& right);
       void         add_object(
-                     shared_ptr<configuration::host> obj);
-      void         expand_object(
-                     shared_ptr<configuration::host> obj,
-                     configuration::state& s);
+                     configuration::host const& obj);
+      void         expand_objects(configuration::state& s);
       void         modify_object(
-                     shared_ptr<configuration::host> obj);
+                     configuration::host const& obj);
       void         remove_object(
-                     shared_ptr<configuration::host> obj);
+                     configuration::host const& obj);
       void         resolve_object(
-                     shared_ptr<configuration::host> obj);
+                     configuration::host const& obj);
+      void         unresolve_objects();
+
+      // Specific member resolution.
+      void         resolve_check_period(
+                     ::host& hst,
+                     std::string const& period);
+      void         resolve_check_command(
+                     ::host& hst,
+                     std::string const& cmd);
+      void         resolve_event_handler(
+                     ::host& hst,
+                     std::string const& cmd);
+      void         resolve_notification_period(
+                     ::host& hst,
+                     std::string const& period);
     };
   }
 }

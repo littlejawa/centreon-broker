@@ -1,6 +1,6 @@
 /*
-** Copyright 2002-2006 Ethan Galstad
-** Copyright 2011-2013 Merethis
+** Copyright 2002-2006      Ethan Galstad
+** Copyright 2011-2013,2017 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -21,10 +21,14 @@
 #ifndef CCE_CHECKS_HH
 #  define CCE_CHECKS_HH
 
+#  include <cstdio>
 #  include <sys/time.h>
-#  include "com/centreon/engine/objects/contact.hh"
-#  include "com/centreon/engine/objects/host.hh"
-#  include "com/centreon/engine/objects/service.hh"
+#  include "com/centreon/engine/namespace.hh"
+
+CCE_BEGIN()
+  class host;
+  class service;
+CCE_END()
 
 // Service dependency values
 #  define DEPENDENCIES_OK     0
@@ -67,11 +71,11 @@ int reap_check_results();
 // Service Check Functions
 
 int run_scheduled_service_check(
-      service* svc,
+      com::centreon::engine::service* svc,
       int check_options,
       double latency);
 int run_async_service_check(
-      service* svc,
+      com::centreon::engine::service* svc,
       int check_options,
       double latency,
       int scheduled_check,
@@ -79,10 +83,10 @@ int run_async_service_check(
       int* time_is_valid,
       time_t* preferred_time);
 int handle_async_service_check_result(
-      service* temp_service,
+      com::centreon::engine::service* temp_service,
       check_result* queued_check_result);
 int check_service_check_viability(
-      service* svc,
+      com::centreon::engine::service* svc,
       int check_options,
       int* time_is_valid,
       time_t* new_time);
@@ -91,12 +95,12 @@ int check_service_check_viability(
 
 // schedules an immediate or delayed service check
 void schedule_service_check(
-       service* svc,
+       com::centreon::engine::service* svc,
        time_t check_time,
        int options);
 // schedules an immediate or delayed host check
 void schedule_host_check(
-       host* hst,
+       com::centreon::engine::host* hst,
        time_t check_time,
        int options);
 
@@ -104,7 +108,7 @@ void schedule_host_check(
 
 // checks service dependencies
 unsigned int check_service_dependencies(
-               service* svc,
+               com::centreon::engine::service* svc,
                int dependency_type);
 // checks for orphaned services
 void check_for_orphaned_services();
@@ -112,12 +116,12 @@ void check_for_orphaned_services();
 void check_service_result_freshness();
 // determines if a service's check results are fresh
 int is_service_result_fresh(
-      service* temp_service,
+      com::centreon::engine::service* temp_service,
       time_t current_time,
       int log_this);
 // checks host dependencie
 unsigned int check_host_dependencies(
-               host* hst,
+               com::centreon::engine::host* hst,
                int dependency_type);
 // checks for orphaned hosts
 void check_for_orphaned_hosts();
@@ -125,40 +129,40 @@ void check_for_orphaned_hosts();
 void check_host_result_freshness();
 // determines if a host's check results are fresh
 int is_host_result_fresh(
-      host* temp_host,
+      com::centreon::engine::host* temp_host,
       time_t current_time,
       int log_this);
 
 // Route/Host Check Functions
 int perform_on_demand_host_check(
-      host* hst,
+      com::centreon::engine::host* hst,
       int* check_return_code,
       int check_options,
       int use_cached_result,
       unsigned long check_timestamp_horizon);
 int perform_scheduled_host_check(
-      host* hst,
+      com::centreon::engine::host* hst,
       int check_options,
       double latency);
 int perform_on_demand_host_check_3x(
-      host* hst,
+      com::centreon::engine::host* hst,
       int* check_result_code,
       int check_options,
       int use_cached_result,
       unsigned long check_timestamp_horizon);
 int run_sync_host_check_3x(
-      host* hst,
+      com::centreon::engine::host* hst,
       int* check_result_code,
       int check_options,
       int use_cached_result,
       unsigned long check_timestamp_horizon);
-int execute_sync_host_check_3x(host* hst);
+int execute_sync_host_check_3x(com::centreon::engine::host* hst);
 int run_scheduled_host_check_3x(
-      host* hst,
+      com::centreon::engine::host* hst,
       int check_options,
       double latency);
 int run_async_host_check_3x(
-      host* hst,
+      com::centreon::engine::host* hst,
       int check_options,
       double latency,
       int scheduled_check,
@@ -166,23 +170,23 @@ int run_async_host_check_3x(
       int* time_is_valid,
       time_t* preferred_time);
 int handle_async_host_check_result_3x(
-      host* temp_host,
+      com::centreon::engine::host* temp_host,
       check_result* queued_check_result);
 int process_host_check_result_3x(
-      host* hst,
+      com::centreon::engine::host* hst,
       int new_state,
-      char* old_plugin_output,
+      char const* old_plugin_output,
       int check_options,
       int reschedule_check,
       int use_cached_result,
       unsigned long check_timestamp_horizon);
 int check_host_check_viability_3x(
-      host* hst,
+      com::centreon::engine::host* hst,
       int check_options,
       int* time_is_valid,
       time_t* new_time);
-int adjust_host_check_attempt_3x(host* hst, int is_active);
-int determine_host_reachability(host* hst);
+int adjust_host_check_attempt_3x(com::centreon::engine::host* hst, int is_active);
+int determine_host_reachability(com::centreon::engine::host* hst);
 
 #  ifdef __cplusplus
 }

@@ -1,5 +1,5 @@
 /*
-** Copyright 2011-2013 Merethis
+** Copyright 2011-2013,2017 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -22,6 +22,7 @@
 
 #  include <string>
 #  include <vector>
+#  include "com/centreon/engine/checks/checkable.hh"
 #  include "com/centreon/engine/namespace.hh"
 
 CCE_BEGIN()
@@ -32,7 +33,7 @@ namespace     retention {
       bool    is_command_exist(std::string const& command_line);
       void    set_state_history(
                 std::vector<int> const& values,
-                int state_history[]);
+                checks::checkable& object);
     }
   }
 }

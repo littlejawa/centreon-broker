@@ -1,8 +1,8 @@
 /*
-** Copyright 2007-2008 Ethan Galstad
-** Copyright 2007,2010 Andreas Ericsson
-** Copyright 2010      Max Schubert
-** Copyright 2011-2013 Merethis
+** Copyright 2007-2008      Ethan Galstad
+** Copyright 2007,2010      Andreas Ericsson
+** Copyright 2010           Max Schubert
+** Copyright 2011-2013,2018 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -47,11 +47,11 @@ void add_event(
        timed_event* event,
        timed_event** event_list,
        timed_event** event_list_tail);
-void adjust_timestamp_for_time_change(
-       time_t last_time,
-       time_t current_time,
-       unsigned long time_difference,
-       time_t* ts);
+time_t adjusted_timestamp_for_time_change(
+         time_t last_time,
+         time_t current_time,
+         unsigned long time_difference,
+         time_t ts);
 void compensate_for_system_time_change(
        unsigned long last_time,
        unsigned long current_time);

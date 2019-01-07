@@ -1,5 +1,5 @@
 /*
-** Copyright 2013 Centreon
+** Copyright 2013,2019 Centreon
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -21,7 +21,8 @@
 #include "com/centreon/broker/neb/internal.hh"
 #include "com/centreon/broker/neb/statistics/services.hh"
 #include "com/centreon/engine/common.hh"
-#include "com/centreon/engine/globals.hh"
+#include "com/centreon/engine/configuration/applier/state.hh"
+#include "com/centreon/engine/service.hh"
 
 using namespace com::centreon::broker;
 using namespace com::centreon::broker::neb;
@@ -67,8 +68,12 @@ void services::run(
 	      std::string& perfdata) {
   // Count services ok / warning / unknown / critical.
   unsigned int total[4] = { 0, 0, 0, 0 };
-  for (service* s(service_list); s; s = s->next)
-    ++total[s->current_state];
+  for (umap<std::pair<std::string, std::string>, com::centreon::shared_ptr<com::centreon::engine::service> >::const_iterator
+         it(com::centreon::engine::configuration::applier::state::instance().services().begin()),
+         end(com::centreon::engine::configuration::applier::state::instance().services().end());
+       it != end;
+       ++it)
+    ++total[it->second->get_current_state()];
 
   unsigned int not_ok(
                  total[STATE_WARNING]

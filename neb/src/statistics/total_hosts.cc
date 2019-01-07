@@ -1,5 +1,5 @@
 /*
-** Copyright 2013 Centreon
+** Copyright 2013,2019 Centreon
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 #include "com/centreon/broker/config/applier/state.hh"
 #include "com/centreon/broker/neb/internal.hh"
 #include "com/centreon/broker/neb/statistics/total_hosts.hh"
-#include "com/centreon/engine/globals.hh"
+#include "com/centreon/engine/configuration/applier/state.hh"
 
 using namespace com::centreon::broker;
 using namespace com::centreon::broker::neb;
@@ -66,9 +66,7 @@ void total_hosts::run(
               std::string& output,
 	      std::string& perfdata) {
   // Count hosts.
-  unsigned int total(0);
-  for (host* h(host_list); h; h = h->next)
-    ++total;
+  unsigned int total(com::centreon::engine::configuration::applier::state::instance().hosts().size());
 
   // Output.
   std::ostringstream oss;

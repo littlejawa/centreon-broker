@@ -1,5 +1,5 @@
 /*
-** Copyright 2011-2014 Merethis
+** Copyright 2011-2018 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -23,12 +23,12 @@
 #  include <vector>
 #  include "com/centreon/engine/configuration/applier/difference.hh"
 #  include "com/centreon/engine/configuration/state.hh"
+#  include "com/centreon/engine/host.hh"
 #  include "com/centreon/engine/namespace.hh"
+#  include "com/centreon/engine/service.hh"
 #  include "com/centreon/unordered_hash.hh"
 
 // Forward declaration.
-struct host_struct;
-struct service_struct;
 struct timed_event_struct;
 
 CCE_BEGIN()
@@ -42,7 +42,7 @@ namespace                 configuration {
      *  Simple configuration applier for scheduler class.
      */
     class                 scheduler {
-    public:
+     public:
       void                apply(
                             state& config,
                             difference<set_host> const& diff_hosts,
@@ -53,7 +53,7 @@ namespace                 configuration {
       void                remove_service(configuration::service const& s);
       static void         unload();
 
-    private:
+     private:
                           scheduler();
                           scheduler(scheduler const&);
                           ~scheduler() throw ();
@@ -61,14 +61,12 @@ namespace                 configuration {
       void                _apply_misc_event();
       void                _calculate_host_inter_check_delay(
                             configuration::state::inter_check_delay method);
-      void                _calculate_host_scheduling_params(
-                            configuration::state const& config);
+      void                _calculate_host_scheduling_params();
       void                _calculate_service_inter_check_delay(
                             configuration::state::inter_check_delay method);
       void                _calculate_service_interleave_factor(
                             configuration::state::interleave_factor method);
-      void                _calculate_service_scheduling_params(
-                            configuration::state const& config);
+      void                _calculate_service_scheduling_params();
       timed_event_struct* _create_misc_event(
                             int type,
                             time_t start,
@@ -76,22 +74,23 @@ namespace                 configuration {
                             void* data = NULL);
       void                _get_hosts(
                             set_host const& hst_added,
-                            std::vector<host_struct*>& new_hosts,
+                            std::vector< ::host*>& new_hosts,
                             bool throw_if_not_found = true);
       void                _get_services(
                             set_service const& svc_added,
-                            std::vector<service_struct*>& new_services,
+                            std::vector< ::service*>& new_services,
                             bool throw_if_not_found = true);
       void                _remove_misc_event(timed_event_struct*& evt);
-      void                _schedule_host_checks(
-                            std::vector<host_struct*> const& hosts);
-      void                _schedule_service_checks(
-                            std::vector<service_struct*> const& services);
-      void                _unschedule_host_checks(
-                            std::vector<host_struct*> const& hosts);
-      void                _unschedule_service_checks(
-                            std::vector<service_struct*> const& services);
+      void                _schedule_host_events(
+                            std::vector< ::host*> const& hosts);
+      void                _schedule_service_events(
+                            std::vector< ::service*> const& services);
+      void                _unschedule_host_events(
+                            std::vector< ::host*> const& hosts);
+      void                _unschedule_service_events(
+                            std::vector< ::service*> const& services);
 
+      state*              _config;
       timed_event_struct* _evt_check_reaper;
       timed_event_struct* _evt_command_check;
       timed_event_struct* _evt_hfreshness_check;

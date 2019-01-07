@@ -1,5 +1,5 @@
 /*
-** Copyright 2011-2013 Merethis
+** Copyright 2011-2013,2017 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -20,11 +20,9 @@
 #ifndef CCE_RETENTION_APPLIER_HOST_HH
 #  define CCE_RETENTION_APPLIER_HOST_HH
 
+#  include "com/centreon/engine/host.hh"
 #  include "com/centreon/engine/namespace.hh"
 #  include "com/centreon/engine/retention/host.hh"
-
-// Forward declaration.
-struct host_struct;
 
 CCE_BEGIN()
 
@@ -36,17 +34,17 @@ namespace configuration {
 namespace   retention {
   namespace applier {
     class   host {
-    public:
+     public:
       void  apply(
               configuration::state const& config,
               list_host const& lst,
               bool scheduling_info_is_ok);
 
-    private:
+     private:
       void  _update(
               configuration::state const& config,
               retention::host const& state,
-              host_struct& obj,
+              ::host& obj,
               bool scheduling_info_is_ok);
     };
   }

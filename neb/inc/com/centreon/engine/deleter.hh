@@ -1,5 +1,5 @@
 /*
-** Copyright 2011-2013 Merethis
+** Copyright 2011-2013,2017 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -27,7 +27,6 @@
 #  include "com/centreon/engine/deleter/contactgroupsmember.hh"
 #  include "com/centreon/engine/deleter/contact.hh"
 #  include "com/centreon/engine/deleter/contactsmember.hh"
-#  include "com/centreon/engine/deleter/customvariablesmember.hh"
 #  include "com/centreon/engine/deleter/daterange.hh"
 #  include "com/centreon/engine/deleter/downtime.hh"
 #  include "com/centreon/engine/deleter/hostdependency.hh"
@@ -47,4 +46,3 @@
 #  include "com/centreon/engine/deleter/timerange.hh"
 
 #endif // !CCE_DELETER_HH
-

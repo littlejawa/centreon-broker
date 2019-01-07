@@ -1,6 +1,6 @@
 /*
-** Copyright 1999-2009 Ethan Galstad
-** Copyright 2011-2013 Merethis
+** Copyright 1999-2009           Ethan Galstad
+** Copyright 2011-2013,2017-2018 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -21,12 +21,19 @@
 #ifndef CCE_UTILS_HH
 #  define CCE_UTILS_HH
 
-#  include <sys/time.h>
 #  include "com/centreon/engine/checks.hh"
 #  include "com/centreon/engine/macros/defines.hh"
-#  include "com/centreon/engine/objects/command.hh"
 #  include "com/centreon/engine/objects/daterange.hh"
 #  include "com/centreon/engine/objects/timeperiod.hh"
+
+// Forward declarations
+CCE_BEGIN()
+  class contact;
+  class hostgroup;
+  namespace checks {
+    class checkable;
+  }
+CCE_END()
 
 // DBUF structure - dynamic string storage
 typedef struct  dbuf_struct {
@@ -35,10 +42,6 @@ typedef struct  dbuf_struct {
   unsigned long allocated_size;
   unsigned long chunk_size;
 }               dbuf;
-
-#  ifdef __cplusplus
-extern "C" {
-#  endif // C++
 
 // Monitoring/Event Handler Functions
 
@@ -67,13 +70,13 @@ char const* my_ctime(time_t const* t);
 // thread-safe version of get_raw_command_line_r()
 int get_raw_command_line_r(
       nagios_macros* mac,
-      command* cmd_ptr,
+      com::centreon::engine::commands::command* cmd_ptr,
       char const* cmd,
       char** full_command,
       int macro_options);
 // given a raw command line, determine the actual command to run Manipulates global_macros.argv and is thus not threadsafe
 int get_raw_command_line(
-      command* cmd_ptr,
+      com::centreon::engine::commands::command* cmd_ptr,
       char* cmd,
       char** full_command,
       int macro_options);
@@ -82,25 +85,6 @@ int set_environment_var(
       char const* name,
       char const* value,
       int set);
-// check to see if a specific time is covered by a time period
-int check_time_against_period(time_t test_time, timeperiod* tperiod);
-// get the next valid time in a time period
-void get_next_valid_time(
-       time_t pref_time,
-       time_t* valid_time,
-       timeperiod* tperiod);
-int is_daterange_single_day(daterange const* dr);
-// calculate_time_from_day_of_month
-time_t calculate_time_from_day_of_month(
-         int year,
-         int month,
-         int monthday);
-// calculates midnight time of specific (3rd, last, etc.) weekday of a particular month
-time_t calculate_time_from_weekday_of_month(
-         int year,
-         int month,
-         int weekday,
-         int weekday_offset);
 // determine the next time to schedule a log rotation
 time_t get_next_log_rotation_time();
 // trap signals
@@ -116,7 +100,7 @@ char* get_next_string_from_buf(
         int* start_index,
         int bufsize);
 // tests whether or not an object name (host, service, etc.) contains illegal characters
-int contains_illegal_object_chars(char* name);
+bool contains_illegal_object_chars(char const* name);
 char* escape_newlines(char* rawbuf);
 // compares two strings for equality
 int compare_strings(char* val1a, char* val2a);
@@ -144,15 +128,13 @@ void free_notification_list();
 // frees memory associated with a host/service check result
 int free_check_result(check_result* info);
 int parse_check_output(
-      char* buf,
-      char** short_output,
-      char** long_output,
-      char** perf_data,
-      int escape_newlines_please,
-      int newlines_are_escaped);
+      com::centreon::engine::checks::checkable& object,
+      std::string const& buffer);
 
-#  ifdef __cplusplus
-}
-#  endif // C++
+com::centreon::shared_ptr<com::centreon::engine::commands::command>& find_command(std::string const& name);
+com::centreon::shared_ptr<com::centreon::engine::commands::connector>& find_connector(std::string const& name);
+timeperiod& find_timeperiod(std::string const& name);
+com::centreon::engine::hostgroup& find_hostgroup(std::string const& name);
+com::centreon::engine::servicegroup& find_servicegroup(std::string const& name);
 
 #endif // !CCE_UTILS_HH

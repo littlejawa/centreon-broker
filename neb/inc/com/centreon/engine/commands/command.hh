@@ -29,6 +29,10 @@
 
 CCE_BEGIN()
 
+namespace                      configuration {
+  class command;
+}
+
 namespace                      commands {
   /**
    *  @class command command.hh
@@ -39,6 +43,7 @@ namespace                      commands {
    */
   class                        command {
   public:
+    static command*            add_command(commands::command* obj);
                                command(
                                  std::string const& name,
                                  std::string const& command_line,
@@ -55,7 +60,7 @@ namespace                      commands {
     virtual std::string        process_cmd(nagios_macros* macros) const;
     virtual unsigned long      run(
                                  std::string const& processed_cmd,
-                                 nagios_macros& macors,
+                                 nagios_macros& macros,
                                  unsigned int timeout) = 0;
     virtual void               run(
                                  std::string const& process_cmd,

@@ -1,5 +1,5 @@
 /*
-** Copyright 2011-2014 Merethis
+** Copyright 2011-2014,2017 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -26,9 +26,10 @@
 #  include "com/centreon/engine/commands/command.hh"
 #  include "com/centreon/engine/commands/command_listener.hh"
 #  include "com/centreon/engine/commands/result.hh"
+#  include "com/centreon/engine/common.hh"
+#  include "com/centreon/engine/host.hh"
 #  include "com/centreon/engine/namespace.hh"
-#  include "com/centreon/engine/objects/host.hh"
-#  include "com/centreon/engine/objects/service.hh"
+#  include "com/centreon/engine/service.hh"
 #  include "com/centreon/unordered_hash.hh"
 
 CCE_BEGIN()

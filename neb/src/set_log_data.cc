@@ -1,5 +1,5 @@
 /*
-** Copyright 2009-2011,2015 Centreon
+** Copyright 2009-2011,2015,2019 Centreon
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@
 #include "com/centreon/broker/exceptions/msg.hh"
 #include "com/centreon/broker/neb/internal.hh"
 #include "com/centreon/broker/neb/set_log_data.hh"
-#include "com/centreon/engine/objects/host.hh"
-#include "com/centreon/engine/objects/service.hh"
+#include "com/centreon/engine/host.hh"
+#include "com/centreon/engine/service.hh"
 
 using namespace com::centreon::broker;
 
@@ -203,10 +203,11 @@ void neb::set_log_data(neb::log_entry& le, char const* log_data) {
   free(datadup);
 
   // Set host and service IDs.
-  le.host_id = engine::get_host_id(le.host_name.toStdString().c_str());
-  le.service_id = engine::get_service_id(
-                    le.host_name.toStdString().c_str(),
-                    le.service_description.toStdString().c_str());
+  // XXX
+  // le.host_id = engine::get_host_id(le.host_name.toStdString().c_str());
+  // le.service_id = engine::get_service_id(
+  //                   le.host_name.toStdString().c_str(),
+  //                   le.service_description.toStdString().c_str());
 
   return ;
 }

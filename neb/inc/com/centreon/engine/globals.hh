@@ -1,7 +1,7 @@
 /*
-** Copyright 1999-2009      Ethan Galstad
-** Copyright 2009-2010      Nagios Core Development Team and Community Contributors
-** Copyright 2011-2013,2015 Merethis
+** Copyright 1999-2009           Ethan Galstad
+** Copyright 2009-2010           Nagios Core Development Team and Community Contributors
+** Copyright 2011-2013,2017-2018 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -23,19 +23,21 @@
 #  define CCE_GLOBALS_HH
 
 #  include <map>
-#  include <string>
 #  include <stdio.h>
 #  include "com/centreon/engine/checks.hh"
 #  include "com/centreon/engine/circular_buffer.hh"
 #  include "com/centreon/engine/configuration/state.hh"
+#  include "com/centreon/engine/downtime.hh"
 #  include "com/centreon/engine/events/hash_timed_event.hh"
 #  include "com/centreon/engine/events/sched_info.hh"
 #  include "com/centreon/engine/events/timed_event.hh"
 #  include "com/centreon/engine/nebmods.hh"
-#  include "com/centreon/engine/notifications.hh"
-#  include "com/centreon/engine/objects.hh"
+#  include "com/centreon/engine/comment.hh"
+#  include "com/centreon/engine/objects/hostdependency.hh"
+#  include "com/centreon/engine/objects/hostescalation.hh"
+#  include "com/centreon/engine/objects/servicedependency.hh"
+#  include "com/centreon/engine/objects/serviceescalation.hh"
 #  include "com/centreon/engine/utils.hh"
-#  include "skiplist.h"
 
 #  ifdef __cplusplus
 extern "C" {
@@ -48,14 +50,19 @@ extern int                       config_warnings;
 extern unsigned long             max_check_result_file_age;
 extern char*                     check_result_path;
 
-extern com::centreon::engine::configuration::state* config;
+extern com::centreon::engine::configuration::state*
+                                 config;
+
 extern char*                     config_file;
 
-extern command*                  global_host_event_handler_ptr;
-extern command*                  global_service_event_handler_ptr;
-
-extern command*                  ocsp_command_ptr;
-extern command*                  ochp_command_ptr;
+extern com::centreon::engine::commands::command*
+                                 global_host_event_handler_ptr;
+extern com::centreon::engine::commands::command*
+                                 global_service_event_handler_ptr;
+extern com::centreon::engine::commands::command*
+                                 ocsp_command_ptr;
+extern com::centreon::engine::commands::command*
+                                 ochp_command_ptr;
 
 extern unsigned long             logging_options;
 extern unsigned long             syslog_options;
@@ -70,7 +77,6 @@ extern unsigned long             modified_host_process_attributes;
 extern unsigned long             modified_service_process_attributes;
 
 extern unsigned long             next_comment_id;
-extern unsigned long             next_downtime_id;
 extern unsigned long             next_event_id;
 extern unsigned long             next_problem_id;
 extern unsigned long             next_notification_id;
@@ -89,8 +95,6 @@ extern int                       restarting;
 extern int                       verify_config;
 extern int                       verify_circular_paths;
 extern int                       test_scheduling;
-extern int                       precache_objects;
-extern int                       use_precached_objects;
 
 extern unsigned int              currently_running_service_checks;
 extern unsigned int              currently_running_host_checks;
@@ -100,25 +104,6 @@ extern time_t                    event_start;
 
 extern int                       embedded_perl_initialized;
 
-extern host*                     host_list;
-extern host*                     host_list_tail;
-extern std::map<std::string, host_other_properties> host_other_props;
-extern service*                  service_list;
-extern service*                  service_list_tail;
-extern std::map<std::pair<std::string, std::string>, service_other_properties> service_other_props;
-extern contact*                  contact_list;
-extern contact*                  contact_list_tail;
-extern std::map<std::string, contact_other_properties> contact_other_props;
-extern contactgroup*             contactgroup_list;
-extern contactgroup*             contactgroup_list_tail;
-extern hostgroup*                hostgroup_list;
-extern hostgroup*                hostgroup_list_tail;
-extern std::map<std::string, hostgroup_other_properties> hostgroup_other_props;
-extern servicegroup*             servicegroup_list;
-extern servicegroup*             servicegroup_list_tail;
-extern std::map<std::string, servicegroup_other_properties> servicegroup_other_props;
-extern command*                  command_list;
-extern command*                  command_list_tail;
 extern timeperiod*               timeperiod_list;
 extern timeperiod*               timeperiod_list_tail;
 extern serviceescalation*        serviceescalation_list;
@@ -132,7 +117,6 @@ extern hostescalation*           hostescalation_list_tail;
 
 extern int                       __nagios_object_structure_version;
 
-extern notification*             notification_list;
 
 extern check_result              check_result_info;
 extern check_result*             check_result_list;
@@ -150,14 +134,11 @@ extern timed_event*              event_list_high;
 extern timed_event*              event_list_high_tail;
 extern sched_info                scheduling_info;
 
-extern comment*                  comment_list;
-extern int                       defer_comment_sorting;
+extern std::map<unsigned long, com::centreon::engine::comment*>
+                                 comment_list;
 
 extern char*                     macro_x_names[];
 extern char*                     macro_user[];
-
-extern scheduled_downtime*       scheduled_downtime_list;
-extern int                       defer_downtime_sorting;
 
 extern FILE*                     debug_file_fp;
 
@@ -181,7 +162,6 @@ extern unsigned int log_service_retries;
 extern unsigned int log_event_handlers;
 extern unsigned int log_external_commands;
 extern unsigned int log_passive_checks;
-extern unsigned int log_initial_states;
 extern int log_host_retries;
 extern int allow_empty_hostgroup_assignment;
 extern unsigned int retain_state_information;

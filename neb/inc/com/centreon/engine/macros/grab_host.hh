@@ -1,6 +1,6 @@
 /*
-** Copyright 1999-2010 Ethan Galstad
-** Copyright 2011-2013 Merethis
+** Copyright 1999-2010      Ethan Galstad
+** Copyright 2011-2013,2017 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -21,8 +21,8 @@
 #ifndef CCE_MACROS_GRAB_HOST_HH
 #  define CCE_MACROS_GRAB_HOST_HH
 
+#  include "com/centreon/engine/host.hh"
 #  include "com/centreon/engine/macros/defines.hh"
-#  include "com/centreon/engine/objects/host.hh"
 
 #  ifdef __cplusplus
 extern "C" {

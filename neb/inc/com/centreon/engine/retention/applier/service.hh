@@ -1,5 +1,5 @@
 /*
-** Copyright 2011-2013 Merethis
+** Copyright 2011-2013,2017 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -22,9 +22,7 @@
 
 #  include "com/centreon/engine/namespace.hh"
 #  include "com/centreon/engine/retention/service.hh"
-
-// Forward declaration.
-struct service_struct;
+#  include "com/centreon/engine/service.hh"
 
 CCE_BEGIN()
 
@@ -46,7 +44,7 @@ namespace   retention {
       void  _update(
               configuration::state const& config,
               retention::service const& state,
-              service_struct& obj,
+              ::service& obj,
               bool scheduling_info_is_ok);
     };
   }

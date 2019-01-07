@@ -27,15 +27,21 @@ CCE_BEGIN()
 
 namespace   retention {
   namespace applier {
+    /**
+     *  @class downtime downtime.hh "com/centreon/engine/retention/applier/downtime.hh"
+     *  @brief Retained downtime applier.
+     *
+     *  Recreate downtimes saved in the retention file.
+     */
     class   downtime {
-    public:
+     public:
       void  apply(list_downtime const& lst);
 
-    private:
+     private:
       void  _add_host_downtime(
-              retention::downtime const& obj) throw ();
+              retention::downtime const& obj);
       void  _add_service_downtime(
-              retention::downtime const& obj) throw ();
+              retention::downtime const& obj);
     };
   }
 }

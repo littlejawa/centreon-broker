@@ -1,5 +1,5 @@
 /*
-** Copyright 2013 Centreon
+** Copyright 2013,2019 Centreon
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -22,7 +22,8 @@
 #include "com/centreon/broker/neb/internal.hh"
 #include "com/centreon/broker/neb/statistics/compute_value.hh"
 #include "com/centreon/broker/neb/statistics/total_service_state_change.hh"
-#include "com/centreon/engine/globals.hh"
+#include "com/centreon/engine/configuration/applier/state.hh"
+#include "com/centreon/engine/service.hh"
 
 using namespace com::centreon::broker;
 using namespace com::centreon::broker::neb;
@@ -70,10 +71,14 @@ total_service_state_change& total_service_state_change::operator=(total_service_
 void total_service_state_change::run(
               std::string& output,
 	      std::string& perfdata) {
-  if (service_list) {
+  if (!com::centreon::engine::configuration::applier::state::instance().services().empty()) {
     compute_value<double> cv;
-    for (service* s(service_list); s; s = s->next)
-      cv << s->percent_state_change;
+    for (umap<std::pair<std::string, std::string>, com::centreon::shared_ptr<com::centreon::engine::service> >::const_iterator
+           it(com::centreon::engine::configuration::applier::state::instance().services().begin()),
+           end(com::centreon::engine::configuration::applier::state::instance().services().end());
+         it != end;
+         ++it)
+      cv << it->second->get_percent_state_change();
 
     // Output.
     std::ostringstream oss;

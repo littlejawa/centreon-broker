@@ -1,5 +1,5 @@
 /*
-** Copyright 2013 Centreon
+** Copyright 2013,2019 Centreon
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -20,7 +20,8 @@
 #include "com/centreon/broker/config/applier/state.hh"
 #include "com/centreon/broker/neb/internal.hh"
 #include "com/centreon/broker/neb/statistics/services_scheduled.hh"
-#include "com/centreon/engine/globals.hh"
+#include "com/centreon/engine/configuration/applier/state.hh"
+#include "com/centreon/engine/service.hh"
 
 using namespace com::centreon::broker::neb;
 using namespace com::centreon::broker::neb::statistics;
@@ -66,8 +67,12 @@ void services_scheduled::run(
 	      std::string& perfdata) {
   // Count services scheduled.
   unsigned int total(0);
-  for (service* s(service_list); s; s = s->next)
-    if (s->should_be_scheduled)
+  for (umap<std::pair<std::string, std::string>, com::centreon::shared_ptr<com::centreon::engine::service> >::const_iterator
+         it(com::centreon::engine::configuration::applier::state::instance().services().begin()),
+         end(com::centreon::engine::configuration::applier::state::instance().services().end());
+       it != end;
+       ++it)
+    if (it->second->get_should_be_scheduled())
       ++total;
 
   // Output.

@@ -1,5 +1,5 @@
 /*
-** Copyright 2013 Centreon
+** Copyright 2013,2019 Centreon
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -20,7 +20,8 @@
 #include "com/centreon/broker/config/applier/state.hh"
 #include "com/centreon/broker/neb/internal.hh"
 #include "com/centreon/broker/neb/statistics/passive_hosts_last.hh"
-#include "com/centreon/engine/globals.hh"
+#include "com/centreon/engine/configuration/applier/state.hh"
+#include "com/centreon/engine/host.hh"
 
 using namespace com::centreon::broker;
 using namespace com::centreon::broker::neb;
@@ -71,9 +72,13 @@ void passive_hosts_last::run(
   unsigned int last_checked_15(0);
   unsigned int last_checked_60(0);
   time_t now(time(NULL));
-  for (host* h(host_list); h; h = h->next) {
-    if (h->check_type == HOST_CHECK_PASSIVE) {
-      int diff(now - h->last_check);
+  for (umap<std::string, com::centreon::shared_ptr<com::centreon::engine::host> >::const_iterator
+         it(com::centreon::engine::configuration::applier::state::instance().hosts().begin()),
+         end(com::centreon::engine::configuration::applier::state::instance().hosts().end());
+       it != end;
+       ++it) {
+    if (it->second->get_check_type() == HOST_CHECK_PASSIVE) {
+      int diff(now - it->second->get_last_check());
       if (diff <= 60 * 60) {
         ++last_checked_60;
         if (diff <= 15 * 60) {

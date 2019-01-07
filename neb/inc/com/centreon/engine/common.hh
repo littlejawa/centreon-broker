@@ -1,7 +1,7 @@
 /*
-** Copyright 1999-2009 Ethan Galstad
-** Copyright 2009-2011 Nagios Core Development Team and Community Contributors
-** Copyright 2011-2013 Merethis
+** Copyright 1999-2009           Ethan Galstad
+** Copyright 2009-2011           Nagios Core Development Team and Community Contributors
+** Copyright 2011-2013,2016-2017 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -22,8 +22,26 @@
 #ifndef CCE_COMMON_HH
 #  define CCE_COMMON_HH
 
+#  include <string>
 #  include "com/centreon/engine/checks/stats.hh"
 #  include "com/centreon/engine/shared.hh"
+#  include "com/centreon/unordered_hash.hh"
+#  include "com/centreon/shared_ptr.hh"
+#  include "com/centreon/engine/namespace.hh"
+
+// Forward declarations
+CCE_BEGIN()
+  namespace commands {
+    class command;
+    class connector;
+  }
+
+  class contact;
+
+  typedef umap<std::string, shared_ptr<contact> >           contact_map;
+  typedef umap<std::string, shared_ptr<commands::command> > command_map;
+  typedef umap<std::string, shared_ptr<commands::connector> > connector_map;
+CCE_END()
 
 /* Daemon is thread safe. */
 #  ifndef _REENTRANT
@@ -32,9 +50,6 @@
 #  ifndef _THREAD_SAFE
 #    define _THREAD_SAFE
 #  endif /* !_THREAD_SAFE */
-
-/* Max number of old states to keep track of for flap detection. */
-#  define MAX_STATE_HISTORY_ENTRIES 21
 
 /* Commands. */
 #  define CMD_NONE                                             0
@@ -207,6 +222,8 @@
 #  define CMD_DEL_DOWNTIME_BY_HOST_NAME                      170
 #  define CMD_DEL_DOWNTIME_BY_HOSTGROUP_NAME                 171
 #  define CMD_DEL_DOWNTIME_BY_START_TIME_COMMENT             172
+#  define CMD_DEL_HOST_DOWNTIME_FULL                         501
+#  define CMD_DEL_SVC_DOWNTIME_FULL                          502
 #  define CMD_CUSTOM_COMMAND                                 999
 
 /* Service check types. */
@@ -221,10 +238,6 @@
 #  define SOFT_STATE 0
 #  define HARD_STATE 1
 
-/* Scheduled downtime types. */
-#  define SERVICE_DOWNTIME 1 /* Service downtime. */
-#  define HOST_DOWNTIME    2 /* Host downtime. */
-#  define ANY_DOWNTIME     3 /* Host or service downtime. */
 
 /* Notification options. */
 #  define NOTIFICATION_OPTION_NONE      0
@@ -236,9 +249,9 @@
 #  define HOST_ACKNOWLEDGEMENT    0
 #  define SERVICE_ACKNOWLEDGEMENT 1
 
-#  define ACKNOWLEDGEMENT_NONE    0
-#  define ACKNOWLEDGEMENT_NORMAL  1
-#  define ACKNOWLEDGEMENT_STICKY  2
+//#  define ACKNOWLEDGEMENT_NONE    0
+//#  define ACKNOWLEDGEMENT_NORMAL  1
+//#  define ACKNOWLEDGEMENT_STICKY  2
 
 /* Dependency types. */
 #  define NOTIFICATION_DEPENDENCY 1
@@ -349,5 +362,19 @@
 
 /* Thread stuff. */
 #  define TOTAL_WORKER_THREADS 1
+
+// Inter-check delay calculation types.
+#  define ICD_NONE  0 // No inter-check delay.
+#  define ICD_DUMB  1 // Dumb delay of 1 second.
+#  define ICD_SMART 2 // Smart delay.
+#  define ICD_USER  3 // User-specified delay.
+
+// Interleave factor calculation types.
+#  define ILF_USER  0 // User-specified interleave factor.
+#  define ILF_SMART 1 // Smart interleave.
+
+// Misc.
+#  define COMMAND_WORKER_THREAD 0
+#  define MAX_PLUGIN_OUTPUT_LENGTH -1 // Plugin output length is not caped.
 
 #endif /* !CCE_COMMON_HH */

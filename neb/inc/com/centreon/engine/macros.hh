@@ -1,6 +1,6 @@
 /*
-** Copyright 1999-2010 Ethan Galstad
-** Copyright 2011-2013 Merethis
+** Copyright 1999-2010      Ethan Galstad
+** Copyright 2011-2013,2017 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -32,13 +32,16 @@
 #  include "com/centreon/engine/macros/misc.hh"
 #  include "com/centreon/engine/macros/process.hh"
 
-#  ifdef __cplusplus
-extern "C" {
-#  endif // C++
+CCE_BEGIN()
+  class contact;
+  class contactgroup;
+  class hostgroup;
+  class servicegroup;
+CCE_END()
 
-int grab_hostgroup_macros(hostgroup* hg);
-int grab_servicegroup_macros(servicegroup* sg);
-int grab_contact_macros(contact* cntct);
+int grab_hostgroup_macros(com::centreon::engine::hostgroup* hg);
+int grab_servicegroup_macros(com::centreon::engine::servicegroup* sg);
+int grab_contact_macros(com::centreon::engine::contact* cntct);
 
 int grab_custom_macro_value(
       char* macro_name,
@@ -52,7 +55,7 @@ int grab_datetime_macro(
       char** output);
 int grab_standard_hostgroup_macro(
       int macro_type,
-      hostgroup* temp_hostgroup,
+      com::centreon::engine::hostgroup* temp_hostgroup,
       char** output);
 int grab_standard_service_macro(
       int macro_type,
@@ -61,35 +64,35 @@ int grab_standard_service_macro(
       int* free_macro);
 int grab_standard_servicegroup_macro(
       int macro_type,
-      servicegroup* temp_servicegroup,
+      com::centreon::engine::servicegroup* temp_servicegroup,
       char** output);
 int grab_standard_contact_macro(
       int macro_type,
-      contact* temp_contact,
+      com::centreon::engine::contact* temp_contact,
       char** output);
 int grab_contact_address_macro(
       unsigned int macro_num,
-      contact* temp_contact,
+      com::centreon::engine::contact* temp_contact,
       char** output);
 int grab_standard_contactgroup_macro(
       int macro_type,
-      contactgroup* temp_contactgroup,
+      com::centreon::engine::contactgroup* temp_contactgroup,
       char** output);
 int grab_custom_object_macro(
       char* macro_name,
-      customvariablesmember* vars,
+      com::centreon::engine::customvar_set const& vars,
       char** output);
 
 // Thread-safe version of the above.
 int grab_hostgroup_macros_r(
       nagios_macros* mac,
-      hostgroup* hg);
+      com::centreon::engine::hostgroup* hg);
 int grab_servicegroup_macros_r(
       nagios_macros* mac,
-      servicegroup* sg);
+      com::centreon::engine::servicegroup* sg);
 int grab_contact_macros_r(
       nagios_macros* mac,
-      contact* cntct);
+      com::centreon::engine::contact* cntct);
 
 int grab_custom_macro_value_r(
       nagios_macros* mac,
@@ -106,26 +109,26 @@ int grab_datetime_macro_r(
 int grab_standard_hostgroup_macro_r(
       nagios_macros* mac,
       int macro_type,
-      hostgroup* temp_hostgroup,
+      com::centreon::engine::hostgroup* temp_hostgroup,
       char** output);
 int grab_standard_servicegroup_macro_r(
       nagios_macros* mac,
       int macro_type,
-      servicegroup* temp_servicegroup,
+      com::centreon::engine::servicegroup* temp_servicegroup,
       char** output);
 int grab_standard_contact_macro_r(
       nagios_macros* mac,
       int macro_type,
-      contact* temp_contact,
+      com::centreon::engine::contact* temp_contact,
       char** output);
 int grab_custom_object_macro_r(
       nagios_macros* mac,
       char* macro_name,
-      customvariablesmember* vars,
+      com::centreon::engine::customvar_set const& vars,
       char** output);
 
 // cleans macros characters before insertion into output string
-char const* clean_macro_chars(char* macro,int options);
+std::string clean_macro_chars(std::string const& macro, int options);
 
 // URL encode a string
 char* get_url_encoded_string(char* input);
@@ -166,9 +169,5 @@ int set_macrox_environment_vars_r(nagios_macros* mac, int set);
 int set_argv_macro_environment_vars_r(nagios_macros* mac, int set);
 int set_custom_macro_environment_vars_r(nagios_macros* mac, int set);
 int set_contact_address_environment_vars_r(nagios_macros* mac, int set);
-
-#  ifdef __cplusplus
-}
-#  endif // C++
 
 #endif // !CCE_MACROS_HH

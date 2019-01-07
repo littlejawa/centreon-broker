@@ -1,5 +1,5 @@
 /*
-** Copyright 2011-2013 Merethis
+** Copyright 2011-2013,2017 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -35,14 +35,14 @@ CCE_BEGIN()
  *  or not.
  */
 class          error : public std::exception {
-public:
+ public:
                error() throw ();
                error(
                  char const* file,
                  char const* function,
                  int line) throw ();
                error(error const& e) throw ();
-               ~error() throw ();
+  virtual      ~error() throw ();
   error&       operator=(error const& e) throw ();
   error&       operator<<(char c) throw ();
   error&       operator<<(char const* str) throw ();
@@ -55,7 +55,7 @@ public:
   error&       operator<<(std::string const& str) throw ();
   char const*  what() const throw ();
 
-private:
+ private:
   template     <typename T>
   void         _insert_with_snprintf(T t, char const* format);
 
@@ -69,6 +69,6 @@ CCE_END()
 #    define engine_error() com::centreon::engine::error()
 #  else
 #    define engine_error() com::centreon::engine::error(__FILE__, __func__, __LINE__)
-#   endif // !NDEBUG
+#   endif // NDEBUG
 
 #endif // !CCE_ERROR_HH

@@ -1,5 +1,5 @@
 /*
-** Copyright 2013 Centreon
+** Copyright 2013,2019 Centreon
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -22,7 +22,8 @@
 #include "com/centreon/broker/neb/internal.hh"
 #include "com/centreon/broker/neb/statistics/active_service_execution_time.hh"
 #include "com/centreon/broker/neb/statistics/compute_value.hh"
-#include "com/centreon/engine/globals.hh"
+#include "com/centreon/engine/configuration/applier/state.hh"
+#include "com/centreon/engine/service.hh"
 
 using namespace com::centreon::broker;
 using namespace com::centreon::broker::neb;
@@ -69,9 +70,13 @@ void active_service_execution_time::run(
               std::string& output,
 	      std::string& perfdata) {
   compute_value<double> cv;
-  for (service* s(service_list); s; s = s->next)
-    if (s->check_type == SERVICE_CHECK_ACTIVE)
-      cv << s->execution_time;
+  for (umap<std::pair<std::string, std::string>, com::centreon::shared_ptr<com::centreon::engine::service> >::const_iterator
+         it(com::centreon::engine::configuration::applier::state::instance().services().begin()),
+         end(com::centreon::engine::configuration::applier::state::instance().services().end());
+       it != end;
+       ++it)
+    if (it->second->get_check_type() == SERVICE_CHECK_ACTIVE)
+      cv << it->second->get_execution_time();
 
   if (cv.size()) {
     // Output.

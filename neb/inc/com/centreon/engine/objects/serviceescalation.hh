@@ -1,5 +1,5 @@
 /*
-** Copyright 2011-2014 Merethis
+** Copyright 2011-2014,2017 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -19,11 +19,17 @@
 
 #ifndef CCE_OBJECTS_SERVICEESCALATION_HH
 #  define CCE_OBJECTS_SERVICEESCALATION_HH
+#  include <string>
+#  include "com/centreon/shared_ptr.hh"
+#  include "com/centreon/unordered_hash.hh"
 
 /* Forward declaration. */
-struct contactgroupsmember_struct;
-struct contactsmember_struct;
-struct service_struct;
+CCE_BEGIN()
+  class contact;
+  class contactgroup;
+  class service;
+CCE_END()
+
 struct timeperiod_struct;
 
 typedef struct                     serviceescalation_struct {
@@ -37,9 +43,13 @@ typedef struct                     serviceescalation_struct {
   int                              escalate_on_warning;
   int                              escalate_on_unknown;
   int                              escalate_on_critical;
-  contactgroupsmember_struct*      contact_groups;
-  contactsmember_struct*           contacts;
-  service_struct*                  service_ptr;
+  umap<std::string, com::centreon::shared_ptr<com::centreon::engine::contactgroup> >
+                                   contact_groups;
+
+  umap<std::string, com::centreon::shared_ptr<com::centreon::engine::contact> >
+                                   contacts;
+
+  com::centreon::engine::service*  service_ptr;
   timeperiod_struct*               escalation_period_ptr;
   struct serviceescalation_struct* next;
   struct serviceescalation_struct* nexthash;

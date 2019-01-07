@@ -1,5 +1,5 @@
 /*
-** Copyright 2013 Centreon
+** Copyright 2013,2019 Centreon
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -21,7 +21,8 @@
 #include "com/centreon/broker/neb/internal.hh"
 #include "com/centreon/broker/neb/statistics/hosts.hh"
 #include "com/centreon/engine/common.hh"
-#include "com/centreon/engine/globals.hh"
+#include "com/centreon/engine/configuration/applier/state.hh"
+#include "com/centreon/engine/host.hh"
 
 using namespace com::centreon::broker;
 using namespace com::centreon::broker::neb;
@@ -67,8 +68,12 @@ void hosts::run(
 	      std::string& perfdata) {
   // Count hosts up / down / unreachable.
   unsigned int total[3] = { 0, 0, 0 };
-  for (host* h(host_list); h; h = h->next)
-    ++total[h->current_state];
+  for (umap<std::string, com::centreon::shared_ptr<com::centreon::engine::host> >::const_iterator
+         it(com::centreon::engine::configuration::applier::state::instance().hosts().begin()),
+         end(com::centreon::engine::configuration::applier::state::instance().hosts().end());
+       it != end;
+       ++it)
+    ++total[it->second->get_current_state()];
 
   unsigned int not_up(total[HOST_DOWN] + total[HOST_UNREACHABLE]);
 

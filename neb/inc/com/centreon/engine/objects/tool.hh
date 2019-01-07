@@ -22,6 +22,7 @@
 
 #  include <cstring>
 #  include <sstream>
+#  include "com/centreon/unordered_hash.hh"
 #  include "com/centreon/engine/namespace.hh"
 
 CCE_BEGIN()
@@ -33,6 +34,32 @@ inline std::string      chkobj(T const* obj) throw () {
   std::ostringstream oss;
   oss << *obj;
   return (oss.str());
+}
+
+template<typename T>
+inline std::string      chkobj(umap<std::string, T> const& obj) throw () {
+  std::ostringstream oss;
+  typename umap<std::string, T>::const_iterator it(obj.begin()), end(obj.end());
+  if (it != end) {
+    oss << it->first;
+  }
+  for (; it != end; ++it)
+    oss << ", " << it->first;
+
+  return oss.str();
+}
+
+template<typename T>
+inline std::string      chkobj(umap<std::pair<std::string, std::string>, T> const& obj) throw () {
+  std::ostringstream oss;
+  typename umap<std::pair<std::string, std::string>, T>::const_iterator it(obj.begin()), end(obj.end());
+  if (it != end) {
+    oss << '(' << it->first.first << ", " << it->first.second << ')';
+  }
+  for (; it != end; ++it)
+    oss << ", (" << it->first.first << ", " << it->first.second << ')';
+
+  return oss.str();
 }
 
 inline bool             is_equal(

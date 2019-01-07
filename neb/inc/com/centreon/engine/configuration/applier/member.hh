@@ -68,10 +68,6 @@ namespace             configuration {
           return (true);
       return (false);
     }
-    void    update_members(
-              umap<std::string, shared_ptr<contact_struct> > const& contacts,
-              std::list<std::string> const& lst,
-              contactsmember_struct*& members);
   }
 }
 

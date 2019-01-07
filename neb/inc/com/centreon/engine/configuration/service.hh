@@ -1,5 +1,5 @@
 /*
-** Copyright 2011-2013,2015-2016 Centreon
+** Copyright 2011-2013,2015-2018 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -36,7 +36,7 @@ namespace                  configuration {
   class                    serviceextinfo;
 
   class                    service : public object {
-  public:
+   public:
     enum                   action_on {
       none = 0,
       ok = (1 << 0),
@@ -44,7 +44,8 @@ namespace                  configuration {
       unknown = (1 << 2),
       critical = (1 << 3),
       flapping = (1 << 4),
-      downtime = (1 << 5)
+      downtime = (1 << 5),
+      recovery = (1 << 6)
     };
     typedef                std::pair<std::string, std::string>
                            key_type;
@@ -71,41 +72,38 @@ namespace                  configuration {
     std::string const&     check_command() const throw ();
     bool                   check_command_is_important() const throw ();
     bool                   check_freshness() const throw ();
-    unsigned int           check_interval() const throw ();
+    int                    check_interval() const throw ();
     std::string const&     check_period() const throw ();
-    list_string&           contactgroups() throw ();
-    list_string const&     contactgroups() const throw ();
+    set_string&            contactgroups() throw ();
+    set_string const&      contactgroups() const throw ();
     bool                   contactgroups_defined() const throw ();
-    list_string&           contacts() throw ();
-    list_string const&     contacts() const throw ();
+    set_string&            contacts() throw ();
+    set_string const&      contacts() const throw ();
     bool                   contacts_defined() const throw ();
     map_customvar const&   customvariables() const throw ();
     std::string const&     display_name() const throw ();
     std::string const&     event_handler() const throw ();
     bool                   event_handler_enabled() const throw ();
-    unsigned int           first_notification_delay() const throw ();
+    int                    first_notification_delay() const throw ();
     bool                   flap_detection_enabled() const throw ();
     unsigned short         flap_detection_options() const throw ();
-    unsigned int           freshness_threshold() const throw ();
+    int                    freshness_threshold() const throw ();
     unsigned int           high_flap_threshold() const throw ();
-    list_string&           hostgroups() throw ();
-    list_string const&     hostgroups() const throw ();
-    list_string&           hosts() throw ();
-    list_string const&     hosts() const throw ();
-    unsigned int           host_id() const throw ();
-    void                   host_id(unsigned int id);
+    set_string&            hostgroups() throw ();
+    set_string const&      hostgroups() const throw ();
+    set_string&            hosts() throw ();
+    set_string const&      hosts() const throw ();
     std::string const&     icon_image() const throw ();
     std::string const&     icon_image_alt() const throw ();
-    unsigned int           initial_state() const throw ();
+    int                    initial_state() const throw ();
     bool                   is_volatile() const throw ();
     unsigned int           low_flap_threshold() const throw ();
-    unsigned int           max_check_attempts() const throw ();
+    int                    max_check_attempts() const throw ();
     std::string const&     notes() const throw ();
     std::string const&     notes_url() const throw ();
     bool                   notifications_enabled() const throw ();
-    void                   notification_interval(
-                             unsigned int interval) throw ();
-    unsigned int           notification_interval() const throw ();
+    void                   notification_interval(int interval) throw ();
+    int                    notification_interval() const throw ();
     bool                   notification_interval_defined() const throw ();
     unsigned short         notification_options() const throw ();
     void                   notification_period(
@@ -116,10 +114,10 @@ namespace                  configuration {
     bool                   process_perf_data() const throw ();
     bool                   retain_nonstatus_information() const throw ();
     bool                   retain_status_information() const throw ();
-    unsigned int           retry_interval() const throw ();
-    unsigned int           recovery_notification_delay() const throw();
-    list_string&           servicegroups() throw ();
-    list_string const&     servicegroups() const throw ();
+    int                    retry_interval() const throw ();
+    int                    recovery_notification_delay() const throw();
+    set_string&            servicegroups() throw ();
+    set_string const&      servicegroups() const throw ();
     std::string&           service_description() throw ();
     std::string const&     service_description() const throw ();
     unsigned int           service_id() const throw();
@@ -130,7 +128,7 @@ namespace                  configuration {
     int                    get_acknowledgement_timeout() const throw ();
     bool                   set_acknowledgement_timeout(int value);
 
-  private:
+   private:
     struct                 setters {
       char const*          name;
       bool                 (*func)(service&, char const*);
@@ -141,7 +139,7 @@ namespace                  configuration {
     bool                   _set_checks_active(bool value);
     bool                   _set_checks_passive(bool value);
     bool                   _set_check_freshness(bool value);
-    bool                   _set_check_interval(unsigned int value);
+    bool                   _set_check_interval(int value);
     bool                   _set_check_period(std::string const& value);
     bool                   _set_contactgroups(std::string const& value);
     bool                   _set_contacts(std::string const& value);
@@ -150,10 +148,10 @@ namespace                  configuration {
     bool                   _set_event_handler_enabled(bool value);
     bool                   _set_failure_prediction_enabled(bool value);
     bool                   _set_failure_prediction_options(std::string const& value);
-    bool                   _set_first_notification_delay(unsigned int value);
+    bool                   _set_first_notification_delay(int value);
     bool                   _set_flap_detection_enabled(bool value);
     bool                   _set_flap_detection_options(std::string const& value);
-    bool                   _set_freshness_threshold(unsigned int value);
+    bool                   _set_freshness_threshold(int value);
     bool                   _set_high_flap_threshold(unsigned int value);
     bool                   _set_hostgroups(std::string const& value);
     bool                   _set_hosts(std::string const& value);
@@ -162,20 +160,20 @@ namespace                  configuration {
     bool                   _set_initial_state(std::string const& value);
     bool                   _set_is_volatile(bool value);
     bool                   _set_low_flap_threshold(unsigned int value);
-    bool                   _set_max_check_attempts(unsigned int value);
+    bool                   _set_max_check_attempts(int value);
     bool                   _set_notes(std::string const& value);
     bool                   _set_notes_url(std::string const& value);
     bool                   _set_notifications_enabled(bool value);
     bool                   _set_notification_options(std::string const& value);
-    bool                   _set_notification_interval(unsigned int value);
+    bool                   _set_notification_interval(int value);
     bool                   _set_notification_period(std::string const& value);
     bool                   _set_obsess_over_service(bool value);
     bool                   _set_parallelize_check(bool value);
     bool                   _set_process_perf_data(bool value);
     bool                   _set_retain_nonstatus_information(bool value);
     bool                   _set_retain_status_information(bool value);
-    bool                   _set_retry_interval(unsigned int value);
-    bool                   _set_recovery_notification_delay(unsigned int value);
+    bool                   _set_retry_interval(int value);
+    bool                   _set_recovery_notification_delay(int value);
     bool                   _set_servicegroups(std::string const& value);
     bool                   _set_service_description(std::string const& value);
     bool                   _set_service_id(unsigned int value);
@@ -189,41 +187,40 @@ namespace                  configuration {
     std::string            _check_command;
     bool                   _check_command_is_important;
     opt<bool>              _check_freshness;
-    opt<unsigned int>      _check_interval;
+    opt<int>               _check_interval;
     std::string            _check_period;
-    group                  _contactgroups;
-    group                  _contacts;
+    group<set_string>      _contactgroups;
+    group<set_string>      _contacts;
     map_customvar          _customvariables;
     std::string            _display_name;
     std::string            _event_handler;
     opt<bool>              _event_handler_enabled;
-    opt<unsigned int>      _first_notification_delay;
+    opt<int>               _first_notification_delay;
     opt<bool>              _flap_detection_enabled;
     opt<unsigned short>    _flap_detection_options;
-    opt<unsigned int>      _freshness_threshold;
+    opt<int>               _freshness_threshold;
     opt<unsigned int>      _high_flap_threshold;
-    group                  _hostgroups;
-    group                  _hosts;
-    unsigned int           _host_id;
+    group<set_string>      _hostgroups;
+    group<set_string>      _hosts;
     std::string            _icon_image;
     std::string            _icon_image_alt;
-    opt<unsigned int>      _initial_state;
+    opt<int>               _initial_state;
     opt<bool>              _is_volatile;
     opt<unsigned int>      _low_flap_threshold;
-    opt<unsigned int>      _max_check_attempts;
+    opt<int>               _max_check_attempts;
     std::string            _notes;
     std::string            _notes_url;
     opt<bool>              _notifications_enabled;
-    opt<unsigned int>      _notification_interval;
+    opt<int>               _notification_interval;
     opt<unsigned short>    _notification_options;
     opt<std::string>       _notification_period;
     opt<bool>              _obsess_over_service;
     opt<bool>              _process_perf_data;
     opt<bool>              _retain_nonstatus_information;
     opt<bool>              _retain_status_information;
-    opt<unsigned int>      _retry_interval;
-    opt<unsigned int>      _recovery_notification_delay;
-    group                  _servicegroups;
+    opt<int>               _retry_interval;
+    opt<int>               _recovery_notification_delay;
+    group<set_string>      _servicegroups;
     std::string            _service_description;
     unsigned int           _service_id;
     static setters const   _setters[];
@@ -233,7 +230,7 @@ namespace                  configuration {
 
   typedef shared_ptr<service>    service_ptr;
   typedef std::list<service_ptr> list_service;
-  typedef std::set<service_ptr>  set_service;
+  typedef std::set<service>      set_service;
   typedef umap<std::pair<std::string, std::string>, service_ptr> map_service;
 }
 

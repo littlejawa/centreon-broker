@@ -1,6 +1,6 @@
 /*
-** Copyright 2001-2006 Ethan Galstad
-** Copyright 2011-2013 Merethis
+** Copyright 2001-2006      Ethan Galstad
+** Copyright 2011-2013,2017 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -21,9 +21,9 @@
 #ifndef CCE_XPDDEFAULT_HH
 #  define CCE_XPDDEFAULT_HH
 
+#  include "com/centreon/engine/host.hh"
 #  include "com/centreon/engine/macros/defines.hh"
-#  include "com/centreon/engine/objects/host.hh"
-#  include "com/centreon/engine/objects/service.hh"
+#  include "com/centreon/engine/service.hh"
 
 #  ifdef __cplusplus
 extern "C" {

@@ -1,6 +1,6 @@
 /*
-** Copyright 1999-2010 Ethan Galstad
-** Copyright 2011-2013 Merethis
+** Copyright 1999-2010      Ethan Galstad
+** Copyright 2011-2013,2018 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -24,6 +24,7 @@
 #  include <iomanip>
 #  include <sstream>
 #  include <time.h>
+#  include "com/centreon/engine/common.hh"
 #  include "com/centreon/engine/macros/process.hh"
 #  include "com/centreon/engine/namespace.hh"
 #  include "com/centreon/engine/string.hh"
@@ -31,6 +32,61 @@
 CCE_BEGIN()
 
 namespace  macros {
+  /**
+   *  @class grabber grab.hh "com/centreon/engine/macros/grab.hh"
+   *  @brief Grab macro value.
+   *
+   *  Functor used internally to grab macro values.
+   */
+  template <typename T>
+  class                 grabber {
+   public:
+    virtual             ~grabber() {}
+    virtual char const* operator()(T& t, nagios_macros* mac) const = 0;
+  };
+
+  /**
+   *  @class member_grabber grab.hh "com/centreon/engine/macros/grab.hh"
+   *  @brief Grab class member macro value.
+   *
+   *  Implement the grabber interface to grab class members macro values.
+   */
+  template <typename T, typename U>
+  class                 member_grabber : public grabber<T> {
+   public:
+                        member_grabber(U (T::* member)() const)
+    : _member(member) {}
+                        ~member_grabber() {}
+    char const*         operator()(T& t, nagios_macros* mac) const {
+      (void)mac;
+      return (string::dup((t.*_member)()));
+    }
+
+   private:
+    U (T::*             _member)() const;
+  };
+
+  /**
+   *  @class function_grabber grab.hh "com/centreon/engine/macros/grab.hh"
+   *  @brief Wrap function call.
+   *
+   *  Implements the grabber interface to wrap a function call.
+   */
+  template <typename T>
+  class            function_grabber : public grabber<T> {
+   public:
+                   function_grabber(
+                     char const* (* function)(T&, nagios_macros*))
+    : _function(function) {}
+                   ~function_grabber() {}
+    char const*    operator()(T& t, nagios_macros* mac) const {
+      return (_function(t, mac));
+    }
+
+   private:
+    char const* (* _function)(T&, nagios_macros*);
+  };
+
   /**
    *  Extract double.
    *
@@ -57,12 +113,12 @@ namespace  macros {
    *  @return Duration in a newly allocated string.
    */
   template <typename T>
-  char*    get_duration(T& t, nagios_macros* mac) {
+  char const* get_duration(T& t, nagios_macros* mac) {
     (void)mac;
 
     // Get duration.
     time_t now(time(NULL));
-    unsigned long duration(now - t.last_state_change);
+    unsigned long duration(now - t.get_last_state_change());
 
     // Break down duration.
     unsigned int days(duration / (24 * 60 * 60));
@@ -90,12 +146,12 @@ namespace  macros {
    *  @return Duration in second in a newly allocated string.
    */
   template <typename T>
-  char*    get_duration_sec(T& t, nagios_macros* mac) {
+  char const* get_duration_sec(T& t, nagios_macros* mac) {
     (void)mac;
 
     // Get duration.
     time_t now(time(NULL));
-    unsigned long duration(now - t.last_state_change);
+    unsigned long duration(now - t.get_last_state_change());
     return (string::dup(duration));
   }
 
@@ -108,23 +164,9 @@ namespace  macros {
    *  @return Copy of the requested macro.
    */
   template <typename T, unsigned int macro_id>
-  char*    get_macro_copy(T& t, nagios_macros* mac) {
+  char const* get_macro_copy(T& t, nagios_macros* mac) {
     (void)t;
     return (string::dup(mac->x[macro_id] ? mac->x[macro_id] : ""));
-  }
-
-  /**
-   *  Get string copy of object member.
-   *
-   *  @param[in] t   Base object.
-   *  @param[in] mac Unused.
-   *
-   *  @return String copy of object member.
-   */
-  template <typename T, typename U, U (T::* member)>
-  char*    get_member_as_string(T& t, nagios_macros* mac) {
-    (void)mac;
-    return (string::dup(t.*member));
   }
 
   /**
@@ -146,17 +188,74 @@ namespace  macros {
   }
 
   /**
+   *  Get action URL.
+   *
+   *  @param[in] t    Base object.
+   *  @param[in] mac  Macros.
+   *
+   *  @return Newly allocated and encoded action URL as string.
+   */
+  template <typename T>
+  char const* get_action_url(T& t, nagios_macros* mac) {
+    char* buffer(NULL);
+    process_macros_r(
+      mac,
+      t.get_action_url().c_str(),
+      &buffer,
+      URL_ENCODE_MACRO_CHARS);
+    return (buffer);
+  }
+
+  /**
+   *  Get notes.
+   *
+   *  @param[in] t    Base object.
+   *  @param[in] mac  Macros.
+   *
+   *  @return Newly allocated notes as string.
+   */
+  template <typename T>
+  char const* get_notes(T& t, nagios_macros* mac) {
+    char* buffer(NULL);
+    process_macros_r(
+      mac,
+      t.get_notes().c_str(),
+      &buffer,
+      0);
+    return (buffer);
+  }
+
+  /**
+   *  Get notes URL.
+   *
+   *  @param[in] t    Base object.
+   *  @param[in] mac  Macros.
+   *
+   *  @return Newly allocated and encoded notes URL as string.
+   */
+  template <typename T>
+  char const* get_notes_url(T& t, nagios_macros* mac) {
+    char* buffer(NULL);
+    process_macros_r(
+      mac,
+      t.get_notes_url().c_str(),
+      &buffer,
+      URL_ENCODE_MACRO_CHARS);
+    return (buffer);
+  }
+
+  /**
    *  Extract state type.
    *
-   *  @param[in] t   Base object.
-   *  @param[in] mac Unused.
+   *  @param[in] t    Base object.
+   *  @param[in] mac  Unused.
    *
    *  @return Newly allocated state type as a string.
    */
   template <typename T>
-  char* get_state_type(T& t, nagios_macros* mac) {
+  char const* get_state_type(T& t, nagios_macros* mac) {
     (void)mac;
-    return (string::dup((t.state_type == HARD_STATE)
+    return (string::dup((t.get_current_state_type() == HARD_STATE)
                       ? "HARD"
                       : "SOFT"));
   }

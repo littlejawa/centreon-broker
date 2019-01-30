@@ -648,7 +648,7 @@ int neb::callback_downtime(int callback_type, void* data) {
   }
   catch (std::exception const& e) {
     logging::error(logging::medium) << "callbacks: error occurred while"
-      "generating downtime event: " << e.what();
+      " generating downtime event: " << e.what();
   }
   // Avoid exception propagation in C code.
   catch (...) {}

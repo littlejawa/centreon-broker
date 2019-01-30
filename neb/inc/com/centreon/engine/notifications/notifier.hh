@@ -1,5 +1,5 @@
 /*
-** Copyright 2017-2018 Centreon
+** Copyright 2017-2019 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -39,7 +39,6 @@ namespace                  notifications {
    */
   class                    notifier : public checks::checkable {
    public:
-    typedef bool (notifier::* notifier_filter)();
     typedef void (notifier::* macro_builder)(struct nagios_macros&);
     enum                   acknowledgement_type {
       ACKNOWLEDGEMENT_NONE,
@@ -108,8 +107,6 @@ namespace                  notifications {
     time_t                 get_next_notification() const;
     void                   set_next_notification(
                              time_t next_notification);
-    void                   add_notification_flag(
-                             notifier::notification_type type);
     void                   notify(
                              notification_type type,
                              std::string const& author = "",
@@ -151,7 +148,6 @@ namespace                  notifications {
     // XXX
     void                   delete_acknowledgement_comments();
     void                   delete_all_comments();
-    unsigned int           get_current_notifications_flag() const;
     bool                   get_no_more_notifications() const;
     void                   check_pending_flex_downtime();
     bool                   should_be_escalated() const;
@@ -172,25 +168,12 @@ namespace                  notifications {
     void                   _internal_copy(notifier const& other);
     bool                   _is_notification_viable(int type, int options);
 
-    notifier_filter        _get_filter(notification_type type) const;
     macro_builder          _get_macro_builder(
                              notification_type type) const;
-    bool                   _problem_filter();
-    bool                   _recovery_filter();
-    bool                   _acknowledgement_filter();
-    bool                   _flappingstart_filter();
-    bool                   _flappingstopdisabled_filter();
-    bool                   _downtimestart_filter();
-    bool                   _downtimestopcancelled_filter();
-    bool                   _custom_filter();
 
     void                   _problem_macro_builder(nagios_macros& mac);
     void                   _recovery_macro_builder(nagios_macros& mac);
-    bool                   _notification_is_active(
-                             notification_type type) const;
 
-    static notifier_filter const
-                           _filter[];
     static macro_builder   _macro_builder[];
     static std::string const
                            _notification_string[];
@@ -203,7 +186,6 @@ namespace                  notifications {
     acknowledgement_type   _current_acknowledgement;
     int                    _current_notification_id;
     int                    _current_notification_number;
-    unsigned int           _current_notifications;
     bool                   _escalate_notification;
     time_t                 _first_notification;
     int                    _first_notification_delay;

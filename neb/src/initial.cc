@@ -145,9 +145,19 @@ static void send_downtimes_list() {
     nsdd.type = NEBTYPE_DOWNTIME_ADD;
     nsdd.timestamp.tv_sec = time(NULL);
     nsdd.downtime_type = it->second.get_type();
-    // XXX
-    // nsdd.host_name = dt->host_name;
-    // nsdd.service_description = dt->service_description;
+    if (it->second.get_parent()->is_host()) {
+      com::centreon::engine::host*
+        hst(static_cast<com::centreon::engine::host*>(
+          it->second.get_parent()));
+      nsdd.host_name = hst->get_name().c_str();
+    }
+    else {
+      com::centreon::engine::service*
+        svc(static_cast<com::centreon::engine::service*>(
+          it->second.get_parent()));
+      nsdd.host_name = svc->get_host_name().c_str();
+      nsdd.service_description = svc->get_description().c_str();
+    }
     nsdd.entry_time = it->second.get_entry_time();
     nsdd.author_name = it->second.get_author().c_str();
     nsdd.comment_data = it->second.get_comment().c_str();

@@ -24,7 +24,7 @@
 #  include <string>
 #  include "com/centreon/engine/customvar.hh"
 #  include "com/centreon/engine/namespace.hh"
-#  include "com/centreon/engine/notifications/notifier.hh"
+#  include "com/centreon/engine/notifications/notifiable.hh"
 
 CCE_BEGIN()
 
@@ -34,7 +34,7 @@ CCE_BEGIN()
  *
  *  Monitorable nodes are checked and notified of problems.
  */
-class                  monitorable : public notifications::notifier {
+class                  monitorable : public notifications::notifiable {
  public:
                        monitorable();
                        monitorable(monitorable const& other);

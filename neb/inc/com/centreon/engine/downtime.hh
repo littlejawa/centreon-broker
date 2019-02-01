@@ -28,7 +28,7 @@ CCE_BEGIN()
 
 // Forward declarations
 namespace notifications {
-  class notifier;
+  class notifiable;
 }
 
 /**
@@ -47,7 +47,7 @@ class                downtime {
 
                      downtime(
                        unsigned long id = 0,
-                       notifications::notifier* parent = NULL,
+                       notifications::notifiable* parent = NULL,
                        time_t entry_time = (time_t)0,
                        std::string const& author = "",
                        std::string const& comment_data = "",
@@ -79,7 +79,7 @@ class                downtime {
   unsigned long      get_duration() const;
   std::string const& get_author() const;
   std::string const& get_comment() const;
-  notifications::notifier*
+  notifications::notifiable*
                      get_parent() const;
   void               start();
   void               stop();
@@ -97,7 +97,7 @@ class                downtime {
   unsigned long      _id;
   bool               _in_effect;
   bool               _incremented_pending_downtime;
-  notifications::notifier*
+  notifications::notifiable*
                      _parent;
   time_t             _start_time;
   unsigned long      _triggered_by;

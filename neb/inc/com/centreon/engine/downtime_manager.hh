@@ -23,7 +23,7 @@
 #  include <ctime>
 #  include <string>
 #  include "com/centreon/engine/namespace.hh"
-#  include "com/centreon/engine/notifications/notifier.hh"
+#  include "com/centreon/engine/notifications/notifiable.hh"
 #  include "com/centreon/unordered_hash.hh"
 
 CCE_BEGIN()
@@ -54,7 +54,7 @@ class                      downtime_manager {
   unsigned long            get_next_downtime_id() const;
   void                     set_next_downtime_id(unsigned long id);
   unsigned long            schedule(
-                             notifications::notifier* target,
+                             notifications::notifiable* target,
                              time_t entry_time,
                              std::string const& author,
                              std::string const& comment,

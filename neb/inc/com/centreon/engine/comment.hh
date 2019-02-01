@@ -26,7 +26,7 @@ CCE_BEGIN()
 
 // Forward declarations
 namespace notifications {
-  class notifier;
+  class notifiable;
 }
 class host;
 class service;
@@ -63,7 +63,7 @@ class           comment {
                 add_new_comment(
                   comment_type type,
                   entry_type ent_type,
-                  notifications::notifier* parent,
+                  notifications::notifiable* parent,
                   time_t entry_time,
                   std::string const& author_name,
                   std::string const& comment_data,
@@ -75,7 +75,7 @@ class           comment {
                 comment(
                   comment_type cmt_type,
                   entry_type ent_type,
-                  notifications::notifier* parent,
+                  notifications::notifiable* parent,
                   time_t entry_time,
                   std::string const& author,
                   std::string const& comment_data,
@@ -90,7 +90,7 @@ class           comment {
 
   entry_type    get_entry_type() const;
   void          set_entry_type(entry_type ent_type);
-  notifications::notifier*
+  notifications::notifiable*
                 get_parent() const;
   std::string   get_host_name() const;
   void          set_host_name(std::string const& host_name);
@@ -127,7 +127,7 @@ class           comment {
   entry_type    _entry_type;
   bool          _expires;
   time_t        _expire_time;
-  notifications::notifier*
+  notifications::notifiable*
                 _parent;
   bool          _persistent;
   int           _source;

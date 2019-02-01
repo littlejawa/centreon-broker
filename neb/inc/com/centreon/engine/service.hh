@@ -37,7 +37,7 @@ class host;
  *  @class service service.hh "com/centreon/engine/service.hh"
  *  @brief Service as a host's service.
  *
- *  This class represents a service. It is checkable and also a notifier.
+ *  This class represents a service. It is checkable and also a notifiable.
  */
 class                service : public monitorable {
  public:

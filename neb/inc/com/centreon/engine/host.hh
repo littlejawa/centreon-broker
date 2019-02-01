@@ -34,7 +34,7 @@ class hostgroup;
  *  @class host host.hh "com/centreon/engine/host.hh"
  *  @brief This class represents a host.
  *
- *  A host is checkable and also a notifier.
+ *  A host is checkable and also a notifiable.
  */
 class                        host : public monitorable {
  public:

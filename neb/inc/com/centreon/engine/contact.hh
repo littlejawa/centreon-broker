@@ -24,7 +24,7 @@
 #  include <vector>
 #  include "com/centreon/engine/customvar.hh"
 #  include "com/centreon/engine/namespace.hh"
-#  include "com/centreon/engine/notifications/notifier.hh"
+#  include "com/centreon/engine/notifications/notifiable.hh"
 #  include "com/centreon/engine/objects/timeperiod.hh"
 
 CCE_BEGIN()
@@ -82,9 +82,9 @@ class                           contact {
   void                          set_host_notifications_enabled(
                                   bool enable);
   bool                          get_host_notify_on(
-                                  notifications::notifier::action_on state) const;
+                                  notifications::notifiable::action_on state) const;
   void                          set_host_notify_on(
-                                  notifications::notifier::action_on state,
+                                  notifications::notifiable::action_on state,
                                   bool enabled);
   timeperiod_struct*            get_host_notification_period() const;
   void                          set_host_notification_period(
@@ -106,9 +106,9 @@ class                           contact {
   void                          set_service_notifications_enabled(
                                   bool enable);
   bool                          get_service_notify_on(
-                                  notifications::notifier::action_on state) const;
+                                  notifications::notifiable::action_on state) const;
   void                          set_service_notify_on(
-                                  notifications::notifier::action_on state,
+                                  notifications::notifiable::action_on state,
                                   bool enable);
   timeperiod_struct*            get_service_notification_period() const;
   void                          set_service_notification_period(

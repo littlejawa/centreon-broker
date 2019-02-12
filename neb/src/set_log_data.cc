@@ -22,6 +22,7 @@
 #include "com/centreon/broker/exceptions/msg.hh"
 #include "com/centreon/broker/neb/internal.hh"
 #include "com/centreon/broker/neb/set_log_data.hh"
+#include "com/centreon/engine/configuration/applier/state.hh"
 #include "com/centreon/engine/host.hh"
 #include "com/centreon/engine/service.hh"
 
@@ -203,11 +204,25 @@ void neb::set_log_data(neb::log_entry& le, char const* log_data) {
   free(datadup);
 
   // Set host and service IDs.
-  // XXX
-  // le.host_id = engine::get_host_id(le.host_name.toStdString().c_str());
-  // le.service_id = engine::get_service_id(
-  //                   le.host_name.toStdString().c_str(),
-  //                   le.service_description.toStdString().c_str());
+  try {
+    if (le.service_description.isEmpty()) {
+      le.host_id = com::centreon::engine::configuration::applier::state::instance().hosts_find(le.host_name.toStdString())->get_id();
+      le.service_id = 0;
+    }
+    else {
+      com::centreon::shared_ptr<com::centreon::engine::service>
+        s(com::centreon::engine::configuration::applier::state::instance().services_find(
+            std::make_pair(
+              le.host_name.toStdString(),
+              le.service_description.toStdString())));
+      le.host_id = s->get_host()->get_id();
+      le.service_id = s->get_id();
+    }
+  }
+  catch (...) {
+    le.host_id = 0;
+    le.service_id = 0;
+  }
 
   return ;
 }

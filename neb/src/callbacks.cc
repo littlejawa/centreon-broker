@@ -39,6 +39,7 @@
 #include "com/centreon/broker/neb/set_log_data.hh"
 #include "com/centreon/broker/neb/statistics/generator.hh"
 #include "com/centreon/engine/broker.hh"
+#include "com/centreon/engine/configuration/applier/state.hh"
 #include "com/centreon/engine/globals.hh"
 #include "com/centreon/engine/hostgroup.hh"
 #include "com/centreon/engine/nebcallbacks.hh"
@@ -769,8 +770,7 @@ int neb::callback_external_command(int callback_type, void* data) {
             QString var_value(*it);
 
             // Find host ID.
-            unsigned int host_id = 0; // XXX engine::get_host_id(
-                                      //       host.toStdString().c_str());
+            unsigned int host_id(com::centreon::engine::configuration::applier::state::instance().hosts_find(host.toStdString())->get_id());
             if (host_id != 0) {
               // Fill custom variable.
               misc::shared_ptr<neb::custom_variable_status>
@@ -807,10 +807,15 @@ int neb::callback_external_command(int callback_type, void* data) {
 
             // Find host/service IDs.
             std::pair<unsigned int, unsigned int> p;
-            // XXX
-            // p = engine::get_host_and_service_id(
-            //               host.toStdString().c_str(),
-            //               service.toStdString().c_str());
+            {
+              com::centreon::shared_ptr<com::centreon::engine::service>
+                s(com::centreon::engine::configuration::applier::state::instance().services_find(
+                    std::make_pair(
+                      host.toStdString(),
+                      service.toStdString())));
+              p.first = s->get_host()->get_id();
+              p.second = s->get_id();
+            }
             if (p.first && p.second) {
               // Fill custom variable.
               misc::shared_ptr<neb::custom_variable_status> cvs(

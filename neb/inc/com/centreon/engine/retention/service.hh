@@ -1,5 +1,5 @@
 /*
-** Copyright 2011-2013,2015-2016,2018 Centreon
+** Copyright 2011-2013,2015-2016,2018-2019 Centreon
 **
 ** This file is part of Centreon Engine.
 **
@@ -99,7 +99,6 @@ namespace                         retention {
     std::string const&            service_description() const throw ();
     opt<std::vector<int> > const& state_history() const throw ();
     opt<int> const&               state_type() const throw ();
-    opt<bool> const&              recovery_been_sent() const throw();
 
   private:
     struct                        setters {
@@ -220,7 +219,6 @@ namespace                         retention {
     opt<std::string>              _plugin_output;
     opt<bool>                     _problem_has_been_acknowledged;
     opt<int>                      _process_performance_data;
-    opt<bool>                     _recovery_been_sent;
     opt<unsigned int>             _retry_check_interval;
     std::string                   _service_description;
     static setters const          _setters[];

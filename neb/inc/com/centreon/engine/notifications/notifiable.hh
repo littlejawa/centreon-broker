@@ -100,6 +100,8 @@ namespace                  notifications {
     void                   set_current_notification_id(int id);
     int                    get_current_notification_number() const;
     void                   set_current_notification_number(int number);
+    time_t                 get_first_notification() const;
+    void                   set_first_notification(time_t first_notification);
     time_t                 get_last_notification() const;
     void                   set_last_notification(
                              time_t last_notification);
@@ -150,11 +152,7 @@ namespace                  notifications {
     bool                   get_no_more_notifications() const;
     void                   check_pending_flex_downtime();
     bool                   should_be_escalated() const;
-    bool                   get_recovery_been_sent() const;
-    time_t                 get_first_notification() const;
-    void                   set_first_notification(time_t first_notification);
 //    void                   set_no_more_notifications(bool no_more);
-    void                   set_recovery_been_sent(bool sent);
     virtual std::string    get_info() const = 0;
     void                   set_flapping_comment_id(unsigned int id);
     unsigned int           get_flapping_comment_id() const;
@@ -196,7 +194,6 @@ namespace                  notifications {
     bool                   _notifications_enabled;
     int                    _notified_states;
     int                    _pending_flex_downtime;
-    bool                   _recovery_been_sent;
     int                    _recovery_notification_delay;
     int                    _scheduled_downtime_depth;
     unsigned int           _flapping_comment_id;

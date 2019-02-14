@@ -593,7 +593,11 @@ int neb::callback_downtime(int callback_type, void* data) {
     if (!downtime_data->host_name)
       throw (exceptions::msg() << "unnamed host");
     if (downtime_data->service_description) {
-      engine::service* svc(static_cast<engine::service*>(downtime_data->object_ptr));
+      std::pair<std::string, std::string> s;
+      s.first = downtime_data->host_name;
+      s.second = downtime_data->service_description;
+      com::centreon::shared_ptr<com::centreon::engine::service>
+        svc(com::centreon::engine::configuration::applier::state::instance().services_find(s));
       downtime->host_id = svc->get_host()->get_id();
       downtime->service_id = svc->get_id();
       if (!downtime->host_id || !downtime->service_id)
@@ -602,8 +606,7 @@ int neb::callback_downtime(int callback_type, void* data) {
                << downtime_data->service_description << "')");
     }
     else {
-      engine::host* hst(static_cast<engine::host*>(downtime_data->object_ptr));
-      downtime->host_id = hst->get_id();
+      downtime->host_id = com::centreon::engine::configuration::applier::state::instance().hosts_find(downtime_data->host_name)->get_id();
       if (downtime->host_id == 0)
         throw (exceptions::msg() << "could not find ID of host '"
                << downtime_data->host_name << "'");

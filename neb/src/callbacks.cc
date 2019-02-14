@@ -1121,7 +1121,7 @@ int neb::callback_host(int callback_type, void* data) {
     my_host->alias = h->get_alias().c_str();
     my_host->check_freshness = h->get_freshness_checks_enabled();
     // XXX my_host->check_command = h->get_check_command();
-    my_host->check_interval = h->get_normal_check_interval();
+    my_host->check_interval = h->get_normal_check_interval() / interval_length;
     my_host->check_period = h->get_check_period()->name;
     my_host->check_type = h->get_check_type();
     my_host->current_check_attempt = h->get_current_attempt();
@@ -1139,7 +1139,7 @@ int neb::callback_host(int callback_type, void* data) {
     my_host->event_handler = h->get_event_handler_args().c_str();
     my_host->event_handler_enabled = h->get_event_handler_enabled();
     my_host->execution_time = h->get_execution_time();
-    my_host->first_notification_delay = h->get_first_notification_delay();
+    my_host->first_notification_delay = h->get_first_notification_delay() / interval_length;
     my_host->flap_detection_enabled = h->get_flap_detection_enabled();
     my_host->flap_detection_on_down = h->get_flap_detection_on_down();
     my_host->flap_detection_on_unreachable
@@ -1171,7 +1171,7 @@ int neb::callback_host(int callback_type, void* data) {
     my_host->notes = h->get_notes().c_str();
     my_host->notes_url = h->get_notes_url().c_str();
     my_host->notifications_enabled = h->get_notifications_enabled();
-    my_host->notification_interval = h->get_notification_interval();
+    my_host->notification_interval = h->get_notification_interval() / interval_length;
     if (h->get_notification_period())
       my_host->notification_period = h->get_notification_period()->name;
     my_host->notify_on_down = h->get_notify_on(
@@ -1196,7 +1196,7 @@ int neb::callback_host(int callback_type, void* data) {
     my_host->poller_id = config::applier::state::instance().poller_id();
     my_host->retain_nonstatus_information = h->get_retain_nonstate_info();
     my_host->retain_status_information = h->get_retain_state_info();
-    my_host->retry_interval = h->get_retry_check_interval();
+    my_host->retry_interval = h->get_retry_check_interval() / interval_length;
     my_host->should_be_scheduled = h->get_should_be_scheduled();
     my_host->stalk_on_down = h->get_stalk_on_down();
     my_host->stalk_on_unreachable = h->get_stalk_on_unreachable();
@@ -1325,7 +1325,7 @@ int neb::callback_host_status(int callback_type, void* data) {
     host_status->acknowledgement_type = h->get_acknowledgement_type();
     host_status->active_checks_enabled = h->get_active_checks_enabled();
     // XXX host_status->check_command = h->host_check_command;
-    host_status->check_interval = h->get_normal_check_interval();
+    host_status->check_interval = h->get_normal_check_interval() / interval_length;
     if (h->get_check_period())
       host_status->check_period = h->get_check_period()->name;
     host_status->check_type = h->get_check_type();
@@ -1372,7 +1372,7 @@ int neb::callback_host_status(int callback_type, void* data) {
     host_status->passive_checks_enabled = h->get_passive_checks_enabled();
     host_status->percent_state_change = h->get_percent_state_change();
     host_status->perf_data = h->get_perfdata().c_str();
-    host_status->retry_interval = h->get_retry_check_interval();
+    host_status->retry_interval = h->get_retry_check_interval() / interval_length;
     host_status->should_be_scheduled = h->get_should_be_scheduled();
     host_status->state_type = (h->get_has_been_checked()
                                ? h->get_current_state_type()
@@ -1787,7 +1787,7 @@ int neb::callback_service(int callback_type, void* data) {
     my_service->active_checks_enabled = s->get_active_checks_enabled();
     // XXX my_service->check_command = s->service_check_command;
     my_service->check_freshness = s->get_freshness_checks_enabled();
-    my_service->check_interval = s->get_normal_check_interval();
+    my_service->check_interval = s->get_normal_check_interval() / interval_length;
     if (s->get_check_period())
       my_service->check_period = s->get_check_period()->name;
     my_service->check_type = s->get_check_type();
@@ -1808,7 +1808,7 @@ int neb::callback_service(int callback_type, void* data) {
     // XXX my_service->event_handler = s->event_handler;
     my_service->event_handler_enabled = s->get_event_handler_enabled();
     my_service->execution_time = s->get_execution_time();
-    my_service->first_notification_delay = s->get_first_notification_delay();
+    my_service->first_notification_delay = s->get_first_notification_delay() / interval_length;
     my_service->flap_detection_enabled = s->get_flap_detection_enabled();
     my_service->flap_detection_on_critical = s->get_flap_detection_on_critical();
     my_service->flap_detection_on_ok = s->get_flap_detection_on_ok();
@@ -1842,7 +1842,7 @@ int neb::callback_service(int callback_type, void* data) {
     my_service->notes = s->get_notes().c_str();
     my_service->notes_url = s->get_notes_url().c_str();
     my_service->notifications_enabled = s->get_notifications_enabled();
-    my_service->notification_interval = s->get_notification_interval();
+    my_service->notification_interval = s->get_notification_interval() / interval_length;
     if (s->get_notification_period())
       my_service->notification_period = s->get_notification_period()->name;
     my_service->notify_on_critical = s->get_notify_on(
@@ -1871,7 +1871,7 @@ int neb::callback_service(int callback_type, void* data) {
       = s->get_retain_nonstate_info();
     my_service->retain_status_information
       = s->get_retain_state_info();
-    my_service->retry_interval = s->get_retry_check_interval();
+    my_service->retry_interval = s->get_retry_check_interval() / interval_length;
     my_service->service_description = s->get_description().c_str();
     my_service->service_id = s->get_id();
     my_service->should_be_scheduled = s->get_should_be_scheduled();
@@ -2013,7 +2013,7 @@ int neb::callback_service_status(int callback_type, void* data) {
     service_status->acknowledgement_type = s->get_acknowledgement_type();
     service_status->active_checks_enabled = s->get_active_checks_enabled();
     // XXX service_status->check_command = s->service_check_command;
-    service_status->check_interval = s->get_normal_check_interval();
+    service_status->check_interval = s->get_normal_check_interval() / interval_length;
     if (s->get_check_period())
       service_status->check_period = s->get_check_period()->name;
     service_status->check_type = s->get_check_type();
@@ -2054,7 +2054,7 @@ int neb::callback_service_status(int callback_type, void* data) {
       = s->get_passive_checks_enabled();
     service_status->percent_state_change = s->get_percent_state_change();
     service_status->perf_data = s->get_perfdata().c_str();
-    service_status->retry_interval = s->get_retry_check_interval();
+    service_status->retry_interval = s->get_retry_check_interval() / interval_length;
     if (s->get_host_name().empty())
       throw (exceptions::msg() << "unnamed host");
     if (s->get_description().empty())

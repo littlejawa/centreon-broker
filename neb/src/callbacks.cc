@@ -592,7 +592,8 @@ int neb::callback_downtime(int callback_type, void* data) {
     downtime->fixed = downtime_data->fixed;
     if (!downtime_data->host_name)
       throw (exceptions::msg() << "unnamed host");
-    if (downtime_data->service_description) {
+    if (downtime_data->service_description
+        && downtime_data->service_description[0]) {
       std::pair<std::string, std::string> s;
       s.first = downtime_data->host_name;
       s.second = downtime_data->service_description;

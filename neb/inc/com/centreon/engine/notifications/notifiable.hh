@@ -108,6 +108,8 @@ namespace                  notifications {
     time_t                 get_next_notification() const;
     void                   set_next_notification(
                              time_t next_notification);
+    bool                   get_no_more_notifications() const;
+    void                   set_no_more_notifications(bool no_more);
     void                   notify(
                              notification_type type,
                              std::string const& author = "",
@@ -149,10 +151,8 @@ namespace                  notifications {
     // XXX
     void                   delete_acknowledgement_comments();
     void                   delete_all_comments();
-    bool                   get_no_more_notifications() const;
     void                   check_pending_flex_downtime();
     bool                   should_be_escalated() const;
-//    void                   set_no_more_notifications(bool no_more);
     virtual std::string    get_info() const = 0;
     void                   set_flapping_comment_id(unsigned int id);
     unsigned int           get_flapping_comment_id() const;
@@ -189,6 +189,7 @@ namespace                  notifications {
     time_t                 _last_acknowledgement;
     time_t                 _last_notification;
     time_t                 _next_notification;
+    bool                   _no_more_notifications;
     long                   _notification_interval;
     timeperiod*            _notification_period;
     bool                   _notifications_enabled;
